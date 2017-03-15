@@ -1,0 +1,497 @@
+<!-- Creator     : groff version 1.22.3 -->
+<!-- CreationDate: Wed Jan 10 04:41:08 2018 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>XSUSPENDER</title>
+
+</head>
+<body>
+
+<h1 align="center">XSUSPENDER</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#ENVIRONMENT">ENVIRONMENT</a><br>
+<a href="#FILES">FILES</a><br>
+<a href="#CONFIGURATION">CONFIGURATION</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#EXAMPLE">EXAMPLE</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">xsuspender -
+auto-suspend inactive X11 applications</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>xsuspender</b></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Modern desktop
+GUI applications may use up significant system resources,
+such as CPU time, just while idly running and even when
+unused. Respecting expressive configuration, XSuspender
+moderates such applications to suspend all activity shortly
+after their windows are unfocused. by sending them Unix
+signal <b>SIGSTOP</b> (or executing a custom script; see
+<b>exec_suspend</b> key in section <b>CONFIGURATION</b>
+below). When the application window regains focus,
+XSuspender sends it signal <b>SIGCONT</b>, and it resumes
+execution exactly where it had left off.</p>
+
+<p style="margin-left:11%; margin-top: 1em">This may result
+in significant reduction in CPU use which prolongs battery
+run-time (5-500%; subject to user&rsquo;s computing habits),
+reduces CPU fan noise, and prevents resource-hogging
+applications from plotting stuff behind your back at least
+when you are not actively using them.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The method also
+has its share of drawbacks. See section <b>BUGS</b>
+below.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The program is
+mainly run without arguments. <b><br>
+-h</b>, <b>--help</b></p>
+
+<p style="margin-left:22%;">Print short help and exit.</p>
+
+<h2>ENVIRONMENT
+<a name="ENVIRONMENT"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>G_MESSAGES_DEBUG</b></p>
+
+<p style="margin-left:22%;">Set
+<b>G_MESSAGES_DEBUG</b>=<i>all</i> to have the program
+report debug messages of its activity to standard error.</p>
+
+<p style="margin-left:11%;"><b>XDG_CONFIG_HOME</b></p>
+
+<p style="margin-left:22%;">If set, the directory where
+<i>xsuspender.conf</i> configuration file can be found. If
+missing, this location defaults to <i>~/.config</i>.</p>
+
+<h2>FILES
+<a name="FILES"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>~/.config/xsuspender.conf</i></p>
+
+<p style="margin-left:22%;">Configuration file read by the
+program.</p>
+
+
+<p style="margin-left:11%;"><i>$XDG_CONFIG_HOME/xsuspender.conf</i></p>
+
+<p style="margin-left:22%;">Alternative configuration file
+when the variable is set.</p>
+
+
+<p style="margin-left:11%;"><i>share/xsuspender/xsuspender.conf.example</i></p>
+
+<p style="margin-left:22%;">Example configuration file
+shipped with the program.</p>
+
+
+<p style="margin-left:11%;"><i>etc/xdg/autostart/xsuspender.desktop</i></p>
+
+<p style="margin-left:22%;">A desktop session auto-start
+launcher. Disabled by default. To enable, copy it into
+<i>.config/autostart</i> directory (or
+<i>$XDG_CONFIG_HOME/autostart</i> where applicable) and edit
+it, setting <i>Hidden=false</i>. Alternatively, you may be
+able to enable it via the session application auto-start
+manager.</p>
+
+<h2>CONFIGURATION
+<a name="CONFIGURATION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Configuration
+key-value file is in INI format. Notice:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="63%">
+
+
+<p>file must be encoded in UTF-8,</p></td>
+<td width="20%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="63%">
+
+
+<p>comments follow &rsquo;#&rsquo; character,</p></td>
+<td width="20%">
+</td></tr>
+<tr valign="top" align="left">
+<td width="14%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="63%">
+
+
+<p>section and key names are case-sensitive.</p></td>
+<td width="20%">
+</td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">The file should
+contain a <b>[Default]</b> section which all other sections
+inherit and override on per-key basis.</p>
+
+<p style="margin-left:11%; margin-top: 1em">Each
+non-<b>[Default]</b> section constitutes a rule that
+XSuspender will try to match and follow. Sections can define
+the the following keys (listed with built-in default
+values): <b><br>
+match_wm_name_contains <br>
+match_wm_class_contains <br>
+match_wm_class_group_contains</b></p>
+
+<p style="margin-left:22%;">These keys order xsuspender to
+apply the rule only to windows that contain the value string
+verbatim in their <i>WM_NAME</i> and <i>WM_CLASS</i> window
+manager hints. When multiple matching keys are specified,
+their logical conjunction (intersection) applies. To find
+applicable values, run:</p>
+
+<p style="margin-left:28%; margin-top: 1em">xprop -notype
+WM_NAME WM_CLASS</p>
+
+<p style="margin-left:22%; margin-top: 1em">and click on
+the window of interest. Class group is the second string in
+the <i>WM_CLASS</i> atom.</p>
+
+
+<p style="margin-left:11%;"><b>suspend_delay&nbsp;</b>=&nbsp;10</p>
+
+<p style="margin-left:22%;">Integer seconds to wait after
+the window loses focus before it is suspended. Setting a
+reasonable value avoids suspending processes too early
+during rapid task switching. If you set this value too low,
+upon process termination, the process may stall in its
+termination routine if it hasn&rsquo;t been able to finish
+in time. Since we&rsquo;re unable to detect this, best give
+your processes ample time.</p>
+
+
+<p style="margin-left:11%;"><b>resume_every&nbsp;</b>=&nbsp;50</p>
+
+<p style="margin-left:22%;">Resume the suspended process
+every this many integer seconds to have it do (some of) its
+backlog of work.</p>
+
+
+<p style="margin-left:11%;"><b>resume_for&nbsp;</b>=&nbsp;5</p>
+
+<p style="margin-left:22%;">Resume suspended process only
+for this long before suspending it again.</p>
+
+
+<p style="margin-left:11%;"><b>only_on_battery&nbsp;</b>=&nbsp;true</p>
+
+<p style="margin-left:22%;">Apply the rule only when on
+battery power. You may wish to set this to <i>false</i> for
+hopelessly annoying processes such as virtual machines
+running Windos.</p>
+
+
+<p style="margin-left:11%;"><b>auto_suspend_on_battery&nbsp;</b>=&nbsp;true</p>
+
+<p style="margin-left:22%;">If true, automatically apply
+this rule when on batter power, even if the matching window
+didn&rsquo;t just lose focus.</p>
+
+
+<p style="margin-left:11%;"><b>suspend_subtree_pattern</b></p>
+
+<p style="margin-left:22%;">Extended regular expression. If
+provided, when XSuspender suspends a process, it will also
+suspend all its descendant processes (children,
+grandchildren etc.) whose command line string matches the
+pattern. Set to <i>.</i> to match and kill all descendants.
+This setting only applies when <b>send_signals</b> is also
+true.</p>
+
+<p style="margin-left:11%;"><b>exec_suspend <br>
+exec_resume</b></p>
+
+<p style="margin-left:22%;">Before suspending / resuming
+the process, execute the string as a command line shell
+script. If the script execution is successful (exit status
+0), proceed with process suspension, otherwise abort it.
+(Process resumption is never aborted.)</p>
+
+<p style="margin-left:22%; margin-top: 1em">The executed
+script gets passed via the environment the following
+variables: <i>PID</i> (process id), <i>XID</i> (X11 window
+id of the triggering window), and <i>WM_NAME</i> (window
+title).</p>
+
+<p style="margin-left:22%; margin-top: 1em">You can use
+these keys to control suspension of your processes or
+disjoint components thereof in a custom way. In this case,
+you may also find <b>send_signals</b> key to be of use.</p>
+
+
+<p style="margin-left:11%;"><b>send_signals&nbsp;</b>=&nbsp;true</p>
+
+<p style="margin-left:22%;">If true, XSuspender kills the
+matching process with SIGSTOP / SIGCONT Unix signals. If
+false, XSuspender sends no signals of its own, deferring to
+your <b>exec_suspend</b> and <b>exec_resume</b> scripts to
+do the work.</p>
+
+
+<p style="margin-left:11%;"><b>downclock_on_battery&nbsp;</b>=&nbsp;0</p>
+
+<p style="margin-left:22%;">Set to greater than zero to
+decrease the CPU time allotted to the matching process when
+running on battery power. For every one time slice running,
+the process sleeps for this many slices. Thus, a value
+<i>1</i> decreases the CPU consumption of the process by
+50%, a value of <i>2</i> by 66%, a value of <i>N</i> by
+<i>N/(N+1)</i>%, and so on. A value of <i>0</i> disables
+downclocking.</p>
+
+<p style="margin-left:22%; margin-top: 1em">This is a
+separate, stand-alone mechanism that limits consumption of,
+also and in particular, focused windows.</p>
+
+<h2>BUGS
+<a name="BUGS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The following
+limitations and quirks are known:</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="86%">
+
+
+<p>Don&rsquo;t configure XSuspender for software you want
+to keep continuously alive in the background, such as music
+players and daemons. If you suspend IM clients, wake them up
+frequently (configuration key <b>resume_every</b>) so they
+can process their queued network events. If you like to
+stream music from YouTube or similar, you might want to
+exempt your browser from suspension, or consider using a
+lighter-weight native client, such as Musictube.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="86%">
+
+
+<p>Windows that minimize to system tray, such as torrent
+and IM clients, need to be resumed frequently to respond to
+tray icon click events in a seamless manner.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="86%">
+
+
+<p>Pasting from clipboard is prevented while the selection
+source process is suspended. Mitigate by using a clipboard
+manager that takes ownership of the selection.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="86%">
+
+
+<p>Suspended windows might not redraw until regaining
+focus. If something covers them, expect visual
+artifacts.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="86%">
+
+
+<p>Mouse-wheel scrolling might not work in suspended
+windows. They require keyboard input focus to resume.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="86%">
+
+
+<p>Processes that take a long time to shut down after their
+window already disappears may be stopped in the middle of
+their termination routines. Avoid with reasonably generous
+&rsquo;suspend_delay&rsquo;.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="86%">
+
+
+<p>XSuspender won&rsquo;t work in remote X sessions.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="1%">
+
+
+<p>&bull;</p></td>
+<td width="2%"></td>
+<td width="86%">
+
+
+<p>XSuspender won&rsquo;t work with Wayland.</p></td></tr>
+</table>
+
+<p style="margin-left:11%; margin-top: 1em">Please raise
+any further bugs and ideas on the project&rsquo;s
+<a href="https://github.com/kernc/xsuspender/issues">GitHub
+issue tracker</a>.</p>
+
+<h2>EXAMPLE
+<a name="EXAMPLE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Example
+configuration section for VirtualBox:</p>
+<pre style="margin-left:17%; margin-top: 1em"># This is a comment.
+
+[Default]
+suspend_delay = 10
+resume_every = 50
+resume_for = 5
+only_on_battery = true
+auto_suspend_on_battery = true
+send_signals = true
+
+# Rule name is an alphanumeric string.
+# Rule VirtualBox inherits from Default rule
+
+[VirtualBox]
+match_wm_class_contains = VirtualBox
+
+# VirtualBox suspension is managed by VBoxManage utility.
+send_signals = false
+
+
+# We get the VM UUID via its process command line.
+# NOTE: Unlike in this example, the whole script should be
+# on a single line.
+exec_suspend = VBoxManage controlvm &quot;$(ps -o args= -q $PID | \
+               sed -E &rsquo;s/.*--startvm ([a-f0-9-]+).*/\1/&rsquo;)&quot; pause
+exec_resume  = VBoxManage controlvm &quot;$(ps -o args= -q $PID | \
+               sed -E &rsquo;s/.*--startvm ([a-f0-9-]+).*/\1/&rsquo;)&quot; resume</pre>
+
+
+<p style="margin-left:11%; margin-top: 1em">Find further
+examples in example configuration file accompanying this
+distribution (see section <b>FILES</b> above).</p>
+
+<p style="margin-left:11%; margin-top: 1em">To debug your
+configuration rules, run:</p>
+
+
+<p style="margin-left:17%; margin-top: 1em">G_MESSAGES_DEBUG=all
+xsuspender</p>
+
+<h2>SEE ALSO
+<a name="SEE ALSO"></a>
+</h2>
+
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>kill</b>(1),
+<b>xprop</b>(1), <b>regex</b>(7), <b>signal</b>(7)</p>
+<hr>
+</body>
+</html>

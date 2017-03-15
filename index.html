@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="Modern GUI applications use significant system resources even when running unused. To save battery life, XSuspender configurably suspends application activity while its windows are not focused.">
+    <meta name="keywords" content="GNU, Linux, X11, suspend, save battery, CPU">
+    <title>XSuspender – Auto-suspend inactive X11 applications</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        blockquote.card p:first-child:before { content: '“' }
+        blockquote.card p:first-child:after  { content: '”' }
+        blockquote.card p:last-child:before  { content: '— ' }
+        blockquote.card p:first-child {font-style: italic}
+    </style>
+    <style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <link rel="icon" type="image/png" href="X11.png" sizes="256x256">
+    <link rel="canonical" href="https://kernc.github.io/xsuspender/">
+</head>
+<body>
+
+<section class="section">
+    <div class="container">
+        <div class="level">
+            <div class="level-left">
+                <div class="image is-128x128" style="margin-right:3em"><img alt="" src="X11.png"></div>
+                <div>
+                    <h1 class="title is-1">
+                        XSuspender
+                    </h1>
+                    <h2 class="subtitle is-4">
+                        Auto-suspend inactive X11 applications
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <p>
+                Modern GUI applications tend to use significant system
+                resources, such as CPU time, even when they're not being actively used.
+            </p>
+            <p>
+                <b>XSuspender</b> configurably
+                suspends application activity
+                (using Unix signal <kbd>SIGSTOP</kbd> or a custom shell script)
+                shortly after its window(s) loses focus.
+                When the window regains focus, the application is transparently
+                resumed exactly where it had left off.
+            </p>
+        </div>
+
+        <div class="columns" style="margin-top:2em">
+            <ul class="column">
+                <li class="media">
+                    <div class="media-left"><span class="icon is-medium"><i class="fa fa-2x fa-battery-three-quarters fa-rotate-270"></i></span></div>
+                    <div class="media-content">
+                        <p><b>Reduce battery use, increase run-time <span style="white-space:nowrap">5–500%</span></b></p>
+                        <p>Make your laptop run on battery for as long as your phone does, using roughly the same technique.</p>
+                    </div>
+                </li>
+                <li class="media">
+                   <div class="media-left"><span class="icon is-medium"><i class="fa fa-2x fa-clock-o"></i></span></div>
+                   <div class="media-content">
+                       <p><b>Reduce interaction latency on low-end CPUs</b></p>
+                       <p>With fewer clients requesting processing power, there's more of it to go around where it's needed.</p>
+                   </div>
+                </li>
+                <li class="media">
+                   <div class="media-left"><span class="icon is-medium"><i class="fa fa-2x fa-thermometer-half"></i></span></div>
+                   <div class="media-content">
+                       <p><b>Reduce CPU temperature and fan noise</b></p>
+                       <p>Save the tinnitus for old age.</p>
+                   </div>
+                </li>
+            </ul>
+
+            <ul class="column">
+                <li class="media">
+                    <div class="media-left"><span class="icon is-medium"><i class="fa fa-2x fa-ban"></i></span></div>
+                    <div class="media-content">
+                        <p><b>Avoid apps plotting stuff behind your back</b></p>
+                        <p>That Kali you're running in a VM is perfectly fine, but god only knows what Microsoft Windos is doing.</p>
+                    </div>
+                </li>
+                <li class="media">
+                    <div class="media-left"><span class="icon is-medium"><i class="fa fa-2x fa-bolt"></i></span></div>
+                    <div class="media-content">
+                        <p><b>Suspend processes with well-known Unix signals</b></p>
+                        <p>Or custom shell scripts. Decades of portable operating systems engineering at its finest.</p>
+                    </div>
+                </li>
+                <li class="media">
+                    <div class="media-left"><span class="icon is-medium"><i class="fa fa-2x fa-cogs"></i></span></div>
+                    <div class="media-content">
+                        <p><b>Preconfigured for popular ‘hog’ software</b></p>
+                        <p>Chromium, Firefox, JetBrains IDEs, qBittorrent, VirtualBox ...</p>
+                    </div>
+                </li>
+            </ul>
+            <ul class="column">
+                <li class="media">
+                    <div class="media-left"><span class="icon is-medium"><i class="fa fa-2x fa-file-code-o"></i></span></div>
+                    <div class="media-content">
+                        <p><b>Written in portable C99</b></p>
+                        <p>Compiles and runs on any reasonably modern X11 platform, including GNU/Linux and *BSD.</p>
+                    </div>
+                </li>
+                <li class="media">
+                    <div class="media-left"><span class="icon is-medium"><i class="fa fa-2x fa-handshake-o"></i></span></div>
+                    <div class="media-content">
+                        <p><b>Zero vulnerabilities or memory leaks</b></p>
+                        <p>Guaranteed or your money back! (In case you do find any, please let us know.)</p>
+                    </div>
+                </li>
+                <li class="media">
+                    <div class="media-left"><span class="icon is-medium"><i class="fa fa-2x fa-thumbs-o-up"></i></span></div>
+                    <div class="media-content">
+                        <p><b>It won't break your system*</b></p>
+                        <p>But if it does, you're <em>free</em> to keep all the pieces.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <aside style="margin:2em 0">
+            <ins class="adsbygoogle has-text-centered is-centered"
+                 style="display:block"
+                 data-ad-client="ca-pub-2900001379782823"
+                 data-ad-slot="6870789679"
+                 data-ad-format="horizontal, rectangle"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </aside>
+
+        <div class="buttons is-centered">
+            <a class="button is-success is-large" href="https://github.com/kernc/xsuspender/#installation">
+                <span class="icon"><i class="fa fa-download"></i></span>
+                <span>Download</span>
+            </a>
+            <span class="is-hidden-mobile" style="margin:0 .5em"></span>
+            <a class="button is-large" href="https://github.com/kernc/xsuspender">
+                <span class="icon"><i class="fa fa-github"></i></span>
+                <span>GitHub</span>
+            </a>
+        </div>
+
+        <p class="is-size-7 has-text-centered">
+            * Make sure to read the
+            <a href="xsuspender.1.html">usage manual</a>,
+            particularly the section called BUGS.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h3 class="title is-3 has-text-centered">
+            What Users are Saying
+        </h3>
+
+        <div class="columns">
+            <div class="column is-3 is-offset-2">
+                <blockquote class="card">
+                    <div class="card-content">
+                        <div class="content">
+                            <p class="is-size-5">This is just very cool!</p>
+                            <p class="is-size-6 has-text-right">Linus Torvalds</p>
+                        </div>
+                    </div>
+                </blockquote>
+            </div>
+            <div class="column is-5">
+                <blockquote class="card">
+                    <div class="card-content">
+                        <div class="content">
+                            <p class="is-size-5">It's a real shame I cannot use it on Wayland.</p>
+                            <p class="is-size-6 has-text-right">A GNOME Desktop User</p>
+                        </div>
+                    </div>
+                </blockquote>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column is-3 is-offset-1">
+                <blockquote class="card">
+                    <div class="card-content">
+                        <div class="content">
+                            <p class="is-size-5">The proof of [this] program's value is its existence.</p>
+                            <p class="is-size-6 has-text-right">Alan Perlis</p>
+                        </div>
+                    </div>
+                </blockquote>
+            </div>
+            <div class="column is-5">
+                <blockquote class="card">
+                    <div class="card-content">
+                        <div class="content">
+                            <p class="is-size-5">All this technology is completely unnecessary to a happy life.</p>
+                            <p class="is-size-6 has-text-right">Tom Hodgkinson</p>
+                        </div>
+                    </div>
+                </blockquote>
+            </div>
+            <aside class="column is-2">
+                <a class="card is-block" style="height:100%" href="bitcoin:1EfAaT8xSBCd1iBv8w6up4r96rifek3d6V?amount=0.1&label=XSuspender-suggestion">
+                    <span class="card-content is-block">
+                        <span class="content is-block">
+                            <span class="is-size-5 has-text-centered is-block">
+                                Your quote here?<br><br>
+                                <span class="icon"><i class="fa fa-2x fa-spin fa-shopping-cart"></i></span>
+                            </span>
+                        </span>
+                    </span>
+                </a>
+            </aside>
+        </div>
+
+        <div class="columns">
+            <div class="column is-5 is-offset-2">
+                <blockquote class="card">
+                    <div class="card-content">
+                        <div class="content">
+                            <p class="is-size-5">Throughout a Unix system, easy things are easy and hard things are at least possible.</p>
+                            <p class="is-size-6 has-text-right">Eric S. Raymond</p>
+                        </div>
+                    </div>
+                </blockquote>
+            </div>
+            <div class="column is-3">
+                <blockquote class="card">
+                    <div class="card-content">
+                        <div class="content">
+                            <p class="is-size-5">[...] When all else fails, read the instructions.</p>
+                            <p class="is-size-6 has-text-right">Cahn</p>
+                        </div>
+                    </div>
+                </blockquote>
+            </div>
+        </div>
+
+        <div id="comments" style="margin-top:4em">
+            <div class="columns">
+                <aside class="column is-2 has-text-centered">
+                    <ins class="adsbygoogle is-block"
+                         data-ad-client="ca-pub-2900001379782823"
+                         data-ad-slot="6870789679"
+                         data-ad-format="auto"></ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                </aside>
+                <div class="column">
+                    <div id="disqus_thread"></div>
+                </div>
+                <div class="column">
+                    <div id="fb-comments"
+                         class="fb-comments"
+                         data-href="https://kernc.github.io/xsuspender/"
+                         data-width="auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container is-fluid has-text-grey-lighter">
+        <span class="is-pulled-left">卐</span>
+        <span class="is-pulled-right">卍</span>
+    </div>
+    <div class="container">
+        <div class="content is-clearfix has-text-centered has-text-grey">
+            <p>Friends don't let friends buy proprietary software.</p>
+        </div>
+    </div>
+</footer>
+
+<a href="https://github.com/kernc/xsuspender" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typogr/0.6.7/typogr.min.js"></script>
+<script>
+    document.body.innerHTML = typogr.widont(document.body.innerHTML);
+
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-43663477-3', 'auto');
+    ga('send', 'pageview');
+
+    window.fbAsyncInit = function () {
+        FB.init({
+            appId: '316461258760349',
+            xfbml: true,
+            autoLogAppEvents: true,
+            version: 'v2.11'
+        });
+        FB.AppEvents.logPageView();
+    };
+
+    window.disqus_config = function () {
+        this.page.identifier = "/";
+        this.page.url = "https://kernc.github.io/xsuspender/";
+    };
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<script src="https://connect.facebook.net/en_US/sdk.js"></script>
+<script src="https://xsuspender.disqus.com/embed.js"></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    if (window.NodeList && !NodeList.prototype.forEach)
+        NodeList.prototype.forEach = Array.prototype.forEach;
+
+    setTimeout(function() {
+        document.querySelectorAll('#comments .column').forEach(
+            div => !div.querySelector('iframe') ? div.parentNode.removeChild(div) : null);
+    }, 7000);
+</script>
+</body>
+</html>
