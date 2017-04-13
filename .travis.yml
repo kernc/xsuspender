@@ -1,0 +1,28 @@
+language: python
+dist: trusty
+sudo: false
+
+cache:
+  apt: true
+  pip: true
+  ccache: true
+
+addons:
+  apt:
+    packages:
+      - cppcheck
+      - libwnck-dev
+
+before_install:
+  - set -e
+  - pip install cpplint
+
+install:
+  -
+
+script:
+  - cppcheck --enable=all --error-exitcode=1 -I src src
+  - cpplint --counting=toplevel --linelength=100 --recursive src
+
+after_success:
+  -
