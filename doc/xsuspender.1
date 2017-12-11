@@ -1,0 +1,327 @@
+.\" Macros from groff an-ext.tmac file for portability
+.de TQ
+.  ns
+.  TP \\$1\" no doublequotes around argument!
+..
+.de UR
+.  ds m1 \\$1\"
+.  nh
+.  if \\n(mH \{\
+.    do ev URL-div
+.    do di URL-div
+.  \}
+..
+.de UE
+.  ie \\n(mH \{\
+.    br
+.    di
+.    ev
+.
+.    ie \\n(dn \{\
+.      do HTML-NS "<a href=""\\*(m1"">"
+.      do chop URL-div
+.      do URL-div
+\c
+.      do HTML-NS </a>
+.    \}
+.    el \
+.      do HTML-NS "<a href=""\\*(m1"">\\*(m1</a>"
+\&\\$*\"
+.  \}
+.  el \
+\\*(la\\*(m1\\*(ra\\$*\"
+.
+.  hy \\n(HY
+..
+.de EX
+.  do ds mF \\n[.fam]
+.  nr mE \\n(.f
+.  nf
+.  nh
+.  do fam C
+.  ft CW
+..
+.de EE
+.  do fam \\*(mF
+.  ft \\n(mE
+.  fi
+.  hy \\n(HY
+..
+.
+.
+.TH XSUSPENDER 1 2017-12-13
+.SH NAME
+xsuspender \- auto-suspend inactive X11 applications
+.SH SYNOPSIS
+.TP
+.B xsuspender
+.SH DESCRIPTION
+Modern desktop GUI applications may use up significant system resources,
+such as CPU time, just while idly running and even when unused.
+Respecting expressive configuration, XSuspender moderates such
+applications to suspend all activity shortly after their windows are unfocused.
+by sending them Unix signal
+.B SIGSTOP
+(or executing a custom script; see
+.B exec_suspend
+key in section
+.B CONFIGURATION
+below).
+When the application window regains focus, XSuspender sends it signal
+.B SIGCONT\fR,
+and it resumes execution exactly where it had left off.
+.PP
+This may result in significant reduction in CPU use which
+prolongs battery run-time (5\-500%; subject to user's computing habits),
+reduces CPU fan noise, and
+prevents resource-hogging applications from plotting stuff
+behind your back at least when you are not actively using them.
+.PP
+The method also has its share of drawbacks. See section
+.B BUGS
+below.
+.SH OPTIONS
+The program is mainly run without arguments.
+.TP
+.BR \-h ", " \-\-help
+Print short help and exit.
+.SH ENVIRONMENT
+.TP
+.B G_MESSAGES_DEBUG
+Set
+.B G_MESSAGES_DEBUG\fR=\fIall\fR
+to have the program report debug messages of its activity
+to standard error.
+.TP
+.B XDG_CONFIG_HOME
+If set, the directory where
+.I xsuspender.conf
+configuration file can be found.
+If missing, this location defaults to \fI~/.config\fR.
+.SH FILES
+.TP
+.I ~/.config/xsuspender.conf
+Configuration file read by the program.
+.TP
+.I $XDG_CONFIG_HOME/xsuspender.conf
+Alternative configuration file when the variable is set.
+.TP
+.I share/xsuspender/xsuspender.conf.example
+Example configuration file shipped with the program.
+.TP
+.I etc/xdg/autostart/xsuspender.desktop
+A desktop session auto-start launcher.
+Disabled by default.
+To enable, copy it into
+.I .config/autostart
+directory (or
+.I $XDG_CONFIG_HOME/autostart
+where applicable) and edit it, setting \fIHidden=false\fR.
+Alternatively, you may be able to enable it via the
+session application auto-start manager.
+.SH CONFIGURATION
+Configuration key\-value file is in INI format. Notice:
+.RS 2
+.IP \[bu] 2
+file must be encoded in UTF-8,
+.IP \[bu] 2
+comments follow '#' character,
+.IP \[bu] 2
+section and key names are case-sensitive.
+.RE
+.PP
+The file should contain a
+.B [Default]
+section which all other sections inherit and override on per-key basis.
+.PP
+Each non-\fB[Default]\fR section constitutes a rule that
+XSuspender will try to match and follow.
+Sections can define the the following keys (listed with built-in
+default values):
+.TP
+.B match_wm_name_contains
+.TQ
+.B match_wm_class_contains
+.TQ
+.B match_wm_class_group_contains
+These keys order xsuspender to apply the rule only to windows
+that contain the value string verbatim in their
+.I WM_NAME
+and
+.I WM_CLASS
+window manager hints.
+When multiple matching keys are specified, their
+logical conjunction (intersection) applies.
+To find applicable values, run:
+.IP
+.in +4
+.nf
+xprop -notype WM_NAME WM_CLASS
+.fi
+.in
+.IP
+and click on the window of interest. Class group is the
+second string in the
+.I WM_CLASS
+atom.
+.TP
+.BR suspend_delay \ =\ 10
+Integer seconds to wait after the window loses focus
+before it is suspended.
+Setting a reasonable value avoids suspending processes too early during
+rapid task switching.
+If you set this value too low, upon process termination,
+the process may stall in its termination routine if it hasn't
+been able to finish in time.
+Since we're unable to detect this, best give your processes ample time.
+.TP
+.BR resume_every \ =\ 50
+Resume the suspended process every this many integer seconds
+to have it do (some of) its backlog of work.
+.TP
+.BR resume_for \ =\ 5
+Resume suspended process only for this long before suspending it again.
+.TP
+.BR only_on_battery \ =\ true
+Apply the rule only when on battery power. You may wish to set this to
+\fIfalse\fR for hopelessly annoying processes such as virtual machines
+running Windos.
+.TP
+.BR auto_suspend_on_battery \ =\ true
+If true, automatically apply this rule when on batter power, even if
+the matching window didn't just lose focus.
+.TP
+.BR suspend_subtree_pattern
+Extended regular expression.
+If provided, when XSuspender suspends a process, it will also suspend
+all its descendant processes (children, grandchildren etc.) whose
+command line string matches the pattern.
+Set to \fI.\fR to match and kill all descendants.
+This setting only applies when
+.B send_signals
+is also true.
+.TP
+.BR exec_suspend
+.TQ
+.BR exec_resume
+Before suspending / resuming the process,
+execute the string as a command line shell script.
+If the script execution is successful (exit status 0), proceed
+with process suspension, otherwise abort it.
+(Process resumption is never aborted.)
+.IP
+The executed script gets passed via the environment the following
+variables:
+.I PID
+(process id),
+.I XID
+(X11 window id of the triggering window), and
+.I WM_NAME
+(window title).
+.IP
+You can use these keys to control suspension of your processes
+or disjoint components thereof
+in a custom way. In this case, you may also find
+.B send_signals
+key to be of use.
+.TP
+.BR send_signals \ =\ true
+If true, XSuspender kills the matching process with
+SIGSTOP / SIGCONT Unix signals.
+If false, XSuspender sends no signals of its own, deferring to
+your
+.B exec_suspend
+and
+.B exec_resume
+scripts to do the work.
+.SH BUGS
+The following limitations and quirks are known:
+.IP \[bu] 2
+Don't configure XSuspender for software you want to keep continuously alive
+in the background, such as music players and daemons.
+If you suspend IM clients, wake them up frequently (configuration key
+.B resume_every\fR)
+so they can process their queued network events.
+If you like to stream music from YouTube or similar, you might
+want to exempt your browser from suspension,
+or consider using a lighter-weight native client, such as Musictube.
+.IP \[bu] 2
+Windows that minimize to system tray, such as torrent and IM clients,
+need to be resumed frequently to respond to tray icon click events
+in a seamless manner.
+.IP \[bu] 2
+Pasting from clipboard is prevented while the selection source process
+is suspended.
+Mitigate by using a clipboard manager that takes ownership of
+the selection.
+.IP \[bu] 2
+Suspended windows might not redraw until regaining focus.
+If something covers them, expect visual artifacts.
+.IP \[bu] 2
+Mouse-wheel scrolling might not work in suspended windows.
+They require keyboard input focus to resume.
+.IP \[bu] 2
+Processes that take a long time to shut down after their window already
+disappears may be stopped in the middle of their termination routines.
+Avoid with reasonably generous `suspend_delay`.
+.IP \[bu] 2
+XSuspender won't work in remote X sessions.
+.IP \[bu] 2
+XSuspender won't work with Wayland.
+.PP
+Please raise any further bugs and ideas on the project's
+.UR https://github.com/kernc/xsuspender/issues
+GitHub issue tracker
+.UE .
+.SH EXAMPLE
+Example configuration section for VirtualBox:
+.PP
+.in +4
+.EX
+# This is a comment.
+
+[Default]
+suspend_delay = 10
+resume_every = 50
+resume_for = 5
+only_on_battery = true
+auto_suspend_on_battery = true
+send_signals = true
+
+# Rule name is an alphanumeric string.
+# Rule VirtualBox inherits from Default rule
+
+[VirtualBox]
+match_wm_class_contains = VirtualBox
+
+# VirtualBox suspension is managed by VBoxManage utility.
+send_signals = false
+
+# We get the VM UUID via its process command line.
+# NOTE: Unlike in this example, the whole script should be
+# on a single line.
+exec_suspend = VBoxManage controlvm "$(ps -o args= -q $PID | \\
+               sed -E 's/.*--startvm ([a-f0-9-]+).*/\\1/')" pause
+exec_resume  = VBoxManage controlvm "$(ps -o args= -q $PID | \\
+               sed -E 's/.*--startvm ([a-f0-9-]+).*/\\1/')" resume
+.EE
+.in
+.PP
+Find further examples in example configuration file
+accompanying this distribution
+(see section
+.B FILES
+above).
+.PP
+To debug your configuration rules, run:
+.PP
+.in +4
+.nf
+G_MESSAGES_DEBUG=all xsuspender
+.fi
+.in
+.SH SEE ALSO
+.BR kill (1),
+.BR xprop (1),
+.BR regex (7),
+.BR signal (7)
