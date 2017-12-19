@@ -24,8 +24,8 @@ install (FILES       data/${PROJECT_NAME}.conf
          DESTINATION ${example_dir})
 install (FILES       data/${PROJECT_NAME}.desktop
          DESTINATION etc/xdg/autostart)
-install (FILES       man/${PROJECT_NAME}.1
-         DESTINATION man/man1)
+install (FILES       doc/${PROJECT_NAME}.1
+         DESTINATION share/man/man1)
 
 add_subdirectory (src)
 

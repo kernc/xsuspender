@@ -17,11 +17,13 @@ addons:
       - cppcheck
       - libwnck-3-dev
       - libglib2.0-dev
+      - groff
 
 before_install:
   - set -e
   - pip install --user cpplint
   - ./lint.sh
+  - "! groff -wall -mandoc -Thtml doc/xsuspender.1 |& grep ' warning: '"
 
 install:
   - cd build
@@ -32,3 +34,6 @@ install:
 
 script:
   - xvfb-run make test
+
+after_success:
+  - if [ "$GH_PASSWORD" ] && [ $CC = "gcc" ]; then cd ..; .travis/man2html.sh; fi
