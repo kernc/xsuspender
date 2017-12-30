@@ -48,6 +48,13 @@ continued where it had left off.
 Installation
 ------------
 
+#### Binary packages
+
+Install binary package for your GNU/Linux distribution:
+
+[![Binary packages](doc/distros.svg)](https://software.opensuse.org//download.html?project=home%3Akernc%3Axsuspender&package=xsuspender)
+
+
 #### From Source
 
 ```bash
