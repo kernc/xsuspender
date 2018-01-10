@@ -213,6 +213,9 @@ cleanup ()
     g_slist_free (suspended_entries);
     g_slist_free (queued_entries);
 
+    // Resume downclocked processes
+    xsus_exit_event_handlers ();
+
     // Delete rules
     for (int i = 0; rules[i]; ++i)
         xsus_rule_free (rules[i]);

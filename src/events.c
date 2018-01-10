@@ -6,6 +6,7 @@
 #include <time.h>
 
 #include "entry.h"
+#include "macros.h"
 
 
 void
@@ -26,7 +27,7 @@ xsus_init_event_handlers ()
 
     // Periodically check if we're on battery power
     g_timeout_add_seconds_full (
-        G_PRIORITY_LOW, CHECK_BATTERY_INTERVAL, on_check_battery_powered, NULL, NULL);
+        G_PRIORITY_LOW, SLOW_INTERVAL, on_check_battery_powered, NULL, NULL);
 }
 
 
@@ -98,11 +99,11 @@ on_active_window_changed (WnckScreen *screen,
 
 
 static inline
-gboolean
-window_exists (WindowEntry *entry)
+pid_t
+window_entry_get_pid (WindowEntry *entry)
 {
     WnckWindow *window = wnck_window_get (entry->xid);
-    return window && wnck_window_get_pid (window) == entry->pid;
+    return window && wnck_window_get_pid (window) == entry->pid ? entry->pid : 0;
 }
 
 
@@ -119,7 +120,7 @@ on_suspend_pending_windows ()
             queued_entries = g_slist_delete_link (queued_entries, l);
 
             // Follow through with suspension only if window is still alive
-            if (window_exists (entry))
+            if (window_entry_get_pid (entry))
                 xsus_signal_stop (entry);
         }
         l = next;
@@ -144,7 +145,7 @@ on_periodic_window_wake_up ()
                      entry->xid, entry->pid, entry->rule->resume_for);
 
             // Re-schedule suspension if window is still alive
-            if (window_exists (entry)) {
+            if (window_entry_get_pid (entry)) {
                 // Make a copy because continuing below frees the entry
                 WindowEntry *copy = xsus_window_entry_copy (entry);
                 xsus_window_entry_enqueue (copy, entry->rule->resume_for);
@@ -157,18 +158,21 @@ on_periodic_window_wake_up ()
 }
 
 
+static inline
+Rule*
+main_window_get_rule (WnckWindow *window)
+{
+    return window == get_main_window (window) ? xsus_window_get_rule (window) : NULL;
+}
+
+
 static
 void
 iterate_windows_kill_matching ()
 {
     for (GList *w = wnck_screen_get_windows (wnck_screen_get_default ()); w ; w = w->next) {
         WnckWindow *window = w->data;
-
-        // Skip transient windows and windows of incorrect type
-        if (window != get_main_window (window))
-            continue;
-
-        Rule *rule = xsus_window_get_rule (window);
+        Rule *rule = main_window_get_rule (window);
 
         // Skip non-matching windows
         if (! rule)
@@ -219,6 +223,20 @@ is_on_ac_power ()
 }
 
 
+static inline
+gboolean
+any_rule_downclocks ()
+{
+    for (int i = 0; rules[i]; ++i)
+        if (rules[i]->downclock_on_battery)
+            return TRUE;
+    return FALSE;
+}
+
+
+static void stop_downclocking ();
+
+
 int
 on_check_battery_powered ()
 {
@@ -229,8 +247,181 @@ on_check_battery_powered ()
     if (previous_state != is_battery_powered) {
         g_debug ("AC power = %d; State changed. Suspending/resuming windows.",
                  ! is_battery_powered);
-
         iterate_windows_kill_matching ();
+
+        // If downclocking is enabled, also start/stop doing that
+        if (any_rule_downclocks()) {
+            if (is_battery_powered) {
+                g_timeout_add_full (
+                    G_PRIORITY_HIGH_IDLE, FAST_INTERVAL_MSEC, on_downclock_slice, NULL, NULL);
+
+                g_timeout_add_seconds_full (
+                    G_PRIORITY_LOW, SLOW_INTERVAL, on_update_downclocked_processes, NULL, NULL);
+
+                on_update_downclocked_processes ();
+            } else{
+                stop_downclocking ();
+            }
+        }
     }
     return TRUE;
+}
+
+
+typedef struct DownclockPair {
+    WindowEntry *entry;
+    guint32 counter;
+} DownclockPair;
+
+// Downclocked processes (configured with downclock_on_battery > 0) are
+// periodically sent STOP and CONT in short time slices. These two lists
+// of DownclockPair track them.
+static GList *downclock_suspended = NULL;
+static GSList *downclock_running = NULL;
+
+// Simple counter of allocated time slices; avoids querying sub-second time
+static guint32 downclock_slice_counter = 0;
+
+
+static inline
+DownclockPair*
+downclock_pair_new (WnckWindow *window,
+                    Rule *rule)
+{
+    DownclockPair *pair = g_malloc (sizeof (DownclockPair));
+    pair->entry = xsus_window_entry_new (window, rule);
+    pair->counter = downclock_slice_counter;
+    return pair;
+}
+
+
+int
+on_downclock_slice ()
+{
+    if (! is_battery_powered)
+        return FALSE;
+
+    downclock_slice_counter ++;
+
+    // Suspend processes that have ran for the past time slice
+    for (GSList *l = downclock_running; l; l = l->next) {
+        DownclockPair *pair = l->data;
+        WindowEntry *entry = pair->entry;
+
+        pid_t pid = window_entry_get_pid (entry);
+        if (! pid)
+            continue;
+
+        // Suspend the process
+        kill (pid, SIGSTOP);
+
+        // Signal to raise after so-many time slices
+        pair->counter = downclock_slice_counter + entry->rule->downclock_on_battery;
+
+        // Put in "suspended" queue
+        downclock_suspended = g_list_prepend (downclock_suspended, pair);
+    }
+    g_slist_free (downclock_running);
+    downclock_running = NULL;
+
+    // Resume processes that have been sleeping for the past few time slices
+    GList *l = downclock_suspended;
+    while (l) {
+        GList *next = l->next;
+        DownclockPair *pair = l->data;
+
+        if (downclock_slice_counter >= pair->counter) {
+            downclock_suspended = g_list_delete_link (downclock_suspended, l);
+            WindowEntry *entry = pair->entry;
+
+            pid_t pid = window_entry_get_pid (entry);
+            if (! pid)
+                continue;
+
+            // Only downclock-resume the current process if it's not already
+            // fully suspended by the other mechanism
+            WnckWindow *window = wnck_window_get (entry->xid);
+            if (! entry->rule->send_signals ||
+                ! xsus_entry_find_for_window_rule (window, entry->rule, suspended_entries))
+                kill (pid, SIGCONT);
+
+            downclock_running = g_slist_prepend (downclock_running, pair);
+        }
+        l = next;
+    }
+    return TRUE;
+}
+
+
+int
+on_update_downclocked_processes ()
+{
+    if (! is_battery_powered)
+        return FALSE;
+
+    // A set of PIDs of already downclocked processes
+    g_autoptr (GHashTable) old_pids = g_hash_table_new (g_direct_hash, g_direct_equal);
+    // A set of PIDs that will become downclocked in the current function invocation
+    g_autoptr (GHashTable) new_pids = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+    // Fill the set of known PIDs
+    for (GSList *l = downclock_running; l; l = l->next)
+        g_hash_table_add (old_pids, GINT_TO_POINTER (((DownclockPair*) l->data)->entry->pid));
+    for (GList *l = downclock_suspended; l; l = l->next)
+        g_hash_table_add (old_pids, GINT_TO_POINTER (((DownclockPair*) l->data)->entry->pid));
+
+    // Iterate over all windows and find processes to downclock
+    for (GList *w = wnck_screen_get_windows (wnck_screen_get_default ()); w ; w = w->next) {
+        WnckWindow *window = w->data;
+        Rule *rule = main_window_get_rule (window);
+
+        // Skip non-matching windows
+        if (! rule || ! rule->downclock_on_battery)
+            continue;
+
+        // Skip any windows/PIDs we already know about
+        pid_t pid = wnck_window_get_pid (window);
+        if (g_hash_table_contains (old_pids, GINT_TO_POINTER (pid)) ||
+            g_hash_table_contains (new_pids, GINT_TO_POINTER (pid)))
+            continue;
+        g_hash_table_add (new_pids, GINT_TO_POINTER (pid));
+
+        // Begin downclocking the process
+        DownclockPair *pair = downclock_pair_new (window, rule);
+        g_debug ("Downclocking %#lx (%d): %s",
+                 pair->entry->xid, pair->entry->pid, pair->entry->wm_name);
+        downclock_running = g_slist_prepend (downclock_running, pair);
+    }
+    return TRUE;
+}
+
+
+static
+void
+stop_downclocking ()
+{
+    // Resume downclocked processes
+    for (GList *l = downclock_suspended; l; l = l->next) {
+        WindowEntry *entry = ((DownclockPair*) l->data)->entry;
+        g_debug ("Normal-clocking %#lx (%d): %s",
+                 entry->xid, entry->pid, entry->wm_name);
+        kill (entry->pid, SIGCONT);
+    }
+
+    // Free entries
+    for (GSList *l = downclock_running; l; l = l->next)
+        xsus_window_entry_free (((DownclockPair*) l->data)->entry);
+    for (GList *l = downclock_suspended; l; l = l->next)
+        xsus_window_entry_free (((DownclockPair*) l->data)->entry);
+    g_slist_free (downclock_running);
+    g_list_free (downclock_suspended);
+    downclock_running = NULL;
+    downclock_suspended = NULL;
+}
+
+
+void
+xsus_exit_event_handlers ()
+{
+    stop_downclocking ();
 }

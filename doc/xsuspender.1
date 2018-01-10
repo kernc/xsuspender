@@ -234,6 +234,24 @@ your
 and
 .B exec_resume
 scripts to do the work.
+.TP
+.BR downclock_on_battery \ =\ 0
+Set to greater than zero to decrease the CPU time allotted to the matching
+process when running on battery power.
+For every one time slice running, the process sleeps for this many slices.
+Thus, a value
+.I 1
+decreases the CPU consumption of the process by 50%,
+a value of
+.I 2
+by 66%, a value of
+.I N
+by \fIN/(N+1)\fR%, and so on. A value of
+.I 0
+disables downclocking.
+.IP
+This is a separate, stand-alone mechanism that limits consumption of,
+also and in particular, focused windows.
 .SH BUGS
 The following limitations and quirks are known:
 .IP \[bu] 2

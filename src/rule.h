@@ -23,6 +23,8 @@ typedef struct Rule {
     gboolean send_signals;
     gboolean only_on_battery;
     gboolean auto_on_battery;
+
+    guint8 downclock_on_battery;
 } Rule;
 
 

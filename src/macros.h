@@ -27,6 +27,7 @@ _cleanup_generic_autofree (void *p)
   static inline void _AUTO_FUNC_NAME(TypeName) (TypeName *_ptr) { if (*_ptr) (func) (*_ptr); }
 
 _DEFINE_AUTOPTR_CLEANUP_FUNC(GError, g_error_free)
+_DEFINE_AUTOPTR_CLEANUP_FUNC(GHashTable, g_hash_table_unref)
 _DEFINE_AUTOPTR_CLEANUP_FUNC(GKeyFile, g_key_file_unref)
 _DEFINE_AUTOPTR_CLEANUP_FUNC(GOptionContext, g_option_context_free)
 _DEFINE_AUTO_CLEANUP_FREE_FUNC(GStrv, g_strfreev)

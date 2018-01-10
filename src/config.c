@@ -128,6 +128,9 @@ read_section (GKeyFile *file,
     val = g_key_file_get_integer (file, section, CONFIG_KEY_RESUME_FOR, &err);
     if (! is_error (&err)) rule->resume_for = (guint16) CLAMP (val, 1, G_MAXUINT16);
 
+    val = g_key_file_get_integer (file, section, CONFIG_KEY_DOWNCLOCK_ON_BATTERY, &err);
+    if (! is_error (&err)) rule->downclock_on_battery = (guint8) CLAMP (val, 0, 9);
+
     char *str;
 
     str = g_key_file_get_value (file, section, CONFIG_KEY_WM_CLASS_CONTAINS, &err);
@@ -187,6 +190,7 @@ debug_print_rule (Rule *rule)
                  "only_on_battery = %d\n"
                  "send_signals = %d\n"
                  "subtree_pattern = %s\n"
+                 "downclock_on_battery = %d\n"
                  "exec_suspend = %s\n"
                  "exec_resume = %s\n",
              rule->needle_wm_class,
@@ -198,6 +202,7 @@ debug_print_rule (Rule *rule)
              rule->only_on_battery,
              rule->send_signals,
              rule->subtree_pattern,
+             rule->downclock_on_battery,
              (rule->exec_suspend ? rule->exec_suspend[2] : NULL),
              (rule->exec_resume ? rule->exec_resume[2] : NULL)
     );
@@ -216,6 +221,8 @@ parse_config ()
         .exec_resume = NULL,
 
         .subtree_pattern = NULL,
+
+        .downclock_on_battery = 0,
 
         .delay = 10,
         .resume_every = 50,
