@@ -113,6 +113,10 @@ Notes
   respond to click events in a seamless manner.
 * Don't configure xsuspender for software you want to keep continuously alive
   in the background, such as music players, daemons, IM clients ... If you
-  frequently stream music from YouTube, you might give [Musictube] a try.
+  frequently stream music from YouTube, you might give
+  [Clementine], [Minitube], [YouTube Viewer] or [SMTube] a try.
   
-[Musictube]: https://flavio.tordini.org/musictube
+[Clementine]: https://www.clementine-player.org
+[Minitube]: https://flavio.tordini.org/minitube
+[YouTube Viewer]: https://github.com/trizen/youtube-viewer
+[SMTube]: https://www.smtube.org
