@@ -21,9 +21,6 @@
 
     <link rel="icon" type="image/png" href="X11.png" sizes="256x256">
     <link rel="canonical home" href="https://kernc.github.io/xsuspender/">
-
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({google_ad_client: "ca-pub-2900001379782823", enable_page_level_ads: true });</script>
 </head>
 <body>
 
@@ -237,20 +234,6 @@
                 </blockquote>
             </div>
         </div>
-
-        <div id="comments" style="margin-top:4em">
-            <div class="columns">
-                <div class="column">
-                    <div id="disqus_thread"></div>
-                </div>
-                <div class="column">
-                    <div id="fb-comments"
-                         class="fb-comments"
-                         data-href="https://kernc.github.io/xsuspender/"
-                         data-width="auto"></div>
-                </div>
-            </div>
-        </div>
     </div>
 </section>
 
@@ -275,33 +258,7 @@
     window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
     ga('create', 'UA-43663477-3', 'auto');
     ga('send', 'pageview');
-
-    window.fbAsyncInit = function () {
-        FB.init({
-            appId: '316461258760349',
-            xfbml: true,
-            autoLogAppEvents: true,
-            version: 'v2.11'
-        });
-        FB.AppEvents.logPageView();
-    };
-
-    window.disqus_config = function () {
-        this.page.identifier = "/";
-        this.page.url = "https://kernc.github.io/xsuspender/";
-    };
 </script>
 <script async src='https://www.google-analytics.com/analytics.js'></script>
-<script src="https://connect.facebook.net/en_US/sdk.js"></script>
-<script src="https://xsuspender.disqus.com/embed.js"></script>
-<script>
-    if (window.NodeList && !NodeList.prototype.forEach)
-        NodeList.prototype.forEach = Array.prototype.forEach;
-
-    setTimeout(function() {
-        document.querySelectorAll('#comments .column').forEach(
-            div => !div.querySelector('iframe') ? div.parentNode.removeChild(div) : null);
-    }, 7000);
-</script>
 </body>
 </html>
