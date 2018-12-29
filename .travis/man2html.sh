@@ -15,7 +15,7 @@ if ! git diff --name-only "$parent" "$head" | grep -Pq "doc/.*\.[1-8]$"; then
     exit 0
 fi
 
-git clone -b gh-pages --depth 3 "https://kernc:$GH_PASSWORD@github.com/$TRAVIS_REPO_SLUG.git" gh-pages
+git clone -b gh-pages "https://kernc:$GH_PASSWORD@github.com/$TRAVIS_REPO_SLUG.git" gh-pages
 groff -wall -mandoc -Thtml doc/xsuspender.1 > gh-pages/xsuspender.1.html
 cd gh-pages
 git commit -m "CI: Update xsuspender.1.html from $head" -- xsuspender.1.html
