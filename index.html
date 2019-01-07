@@ -247,6 +247,17 @@
     window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
     ga('create', 'UA-43663477-3', 'auto');
     ga('send', 'pageview');
+
+document.querySelectorAll('a').forEach(function (el) {
+    el.addEventListener('mousedown', function () {
+        ga('send', 'event',
+            el.dataset.gaCategory || el.id || (el.hostname === location.hostname ? 'Internal' : 'Outgoing'),
+            el.dataset.gaAction || 'click',
+            el.href,
+            {transport: 'beacon'});
+    });
+});
+setInterval(function () { ga('send', 'event', 'pageview', 'view') }, 15000);
 </script>
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 </body>
