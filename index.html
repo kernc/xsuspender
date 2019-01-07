@@ -246,19 +246,24 @@
 
     window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
     ga('create', 'UA-43663477-3', 'auto');
-    ga('send', 'pageview');
 
-document.querySelectorAll('a').forEach(function (el) {
-    el.addEventListener('mousedown', function () {
-        ga('send', 'event',
-            el.dataset.gaCategory || el.id || (el.hostname === location.hostname ? 'Internal' : 'Outgoing'),
-            el.dataset.gaAction || 'click',
-            el.href,
-            {transport: 'beacon'});
-    });
+ga('require', 'cleanUrlTracker', {
+    indexFilename: 'index.html',
+    trailingSlash: 'add'});
+ga('require', 'eventTracker', {
+    attributePrefix: 'data-ga-',
+    events: ['click', 'auxclick', 'contextmenu']});
+ga('require', 'outboundLinkTracker', {
+    attributePrefix: 'data-ga-',
+    events: ['click', 'auxclick', 'contextmenu'],
 });
-setInterval(function () { ga('send', 'event', 'pageview', 'view') }, 15000);
+ga('require', 'maxScrollTracker');
+ga('require', 'pageVisibilityTracker');
+
+ga('send', 'pageview');
+setTimeout(function () { ga('send', 'event', 'pageview', 'view') }, 15000);
 </script>
 <script async src='https://www.google-analytics.com/analytics.js'></script>
+<script async src='https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js'></script>
 </body>
 </html>
