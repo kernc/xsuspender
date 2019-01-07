@@ -36,4 +36,4 @@ script:
   - xvfb-run make test
 
 after_success:
-  - if [ "$GH_PASSWORD" ] && [ $CC = "gcc" ]; then cd ..; .travis/man2html.sh; fi
+  - if [ "$TRAVIS_BRANCH" = "$TRAVIS_TAG" ] && [ $CC = "gcc" ]; then cd ..; .travis/deploy-gh-pages.sh; fi
