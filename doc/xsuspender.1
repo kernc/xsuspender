@@ -113,7 +113,7 @@ Example configuration file shipped with the program.
 A desktop session auto-start launcher.
 Disabled by default.
 To enable, copy it into
-.I .config/autostart
+.I ~/.config/autostart
 directory (or
 .I $XDG_CONFIG_HOME/autostart
 where applicable) and edit it, setting \fIHidden=false\fR.
@@ -136,8 +136,8 @@ section which all other sections inherit and override on per-key basis.
 .PP
 Each non-\fB[Default]\fR section constitutes a rule that
 XSuspender will try to match and follow.
-Sections can define the the following keys (listed with built-in
-default values):
+Sections can define the following keys (listed with built-in
+default values, if any):
 .TP
 .B match_wm_name_contains
 .TQ
@@ -145,7 +145,7 @@ default values):
 .TQ
 .B match_wm_class_group_contains
 These keys order xsuspender to apply the rule only to windows
-that contain the value string verbatim in their
+that contain the verbatim value string in their
 .I WM_NAME
 and
 .I WM_CLASS
@@ -167,7 +167,7 @@ atom.
 .TP
 .BR suspend_delay \ =\ 10
 Integer seconds to wait after the window loses focus
-before it is suspended.
+before suspending it.
 Setting a reasonable value avoids suspending processes too early during
 rapid task switching.
 If you set this value too low, upon process termination,
@@ -188,14 +188,15 @@ Apply the rule only when on battery power. You may wish to set this to
 running Windos.
 .TP
 .BR auto_suspend_on_battery \ =\ true
-If true, automatically apply this rule when on batter power, even if
-the matching window didn't just lose focus.
+If true, automatically apply this rule when switching to batter power,
+even if the matching window didn't just lose focus (but lost it
+some time before).
 .TP
 .BR suspend_subtree_pattern
 Extended regular expression.
 If provided, when XSuspender suspends a process, it will also suspend
 all its descendant processes (children, grandchildren etc.) whose
-command line string matches the pattern.
+command-line string matches the pattern.
 Set to \fI.\fR to match and kill all descendants.
 This setting only applies when
 .B send_signals
@@ -205,7 +206,7 @@ is also true.
 .TQ
 .BR exec_resume
 Before suspending / resuming the process,
-execute the string as a command line shell script.
+execute the string as a command-line shell script.
 If the script execution is successful (exit status 0), proceed
 with process suspension, otherwise abort it.
 (Process resumption is never aborted.)
@@ -228,8 +229,7 @@ key to be of use.
 .BR send_signals \ =\ true
 If true, XSuspender kills the matching process with
 SIGSTOP / SIGCONT Unix signals.
-If false, XSuspender sends no signals of its own, deferring to
-your
+If false, XSuspender sends no signals of its own, deferring to custom
 .B exec_suspend
 and
 .B exec_resume
@@ -250,7 +250,7 @@ by \fIN/(N+1)\fR%, and so on. A value of
 .I 0
 disables downclocking.
 .IP
-This is a separate, stand-alone mechanism that limits consumption of,
+This is a separate, stand-alone mechanism that limits CPU consumption of,
 also and in particular, focused windows.
 .SH BUGS
 The following limitations and quirks are known:
@@ -281,7 +281,8 @@ They require keyboard input focus to resume.
 .IP \[bu] 2
 Processes that take a long time to shut down after their window already
 disappears may be stopped in the middle of their termination routines.
-Avoid with reasonably generous `suspend_delay`.
+Avoid with a reasonably generous
+.B suspend_delay\fR.
 .IP \[bu] 2
 XSuspender won't work in remote X sessions.
 .IP \[bu] 2
