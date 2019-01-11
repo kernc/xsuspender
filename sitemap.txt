@@ -1,0 +1,2 @@
+https://kernc.github.io/xsuspender/
+https://kernc.github.io/xsuspender/xsuspender.1.html
