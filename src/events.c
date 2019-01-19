@@ -211,7 +211,7 @@ is_on_ac_power ()
     // Read AC power state. Should work in most cases. See: https://bugs.debian.org/473629
     char *argv[] = {"sh", "-c", "grep -q 1 /sys/class/power_supply/*/online", NULL};
     g_spawn_sync (NULL, argv, NULL,
-                  G_SPAWN_SEARCH_PATH | (IS_DEBUG ? G_SPAWN_DEFAULT : G_SPAWN_STDERR_TO_DEV_NULL),
+                  G_SPAWN_SEARCH_PATH | G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
                   NULL, NULL, NULL, NULL, &exit_status, NULL);
     gboolean is_ac_power = exit_status == 0;
     return is_ac_power;

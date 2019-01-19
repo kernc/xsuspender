@@ -13,9 +13,7 @@ execute (char **argv,
 {
     g_autoptr (GError) err = NULL;
     gint exit_status = -1;
-    GSpawnFlags flags = IS_DEBUG ?
-                        G_SPAWN_DEFAULT :
-                        G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL;
+    GSpawnFlags flags = G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL;
 
     g_spawn_sync (NULL, argv, envp, flags | G_SPAWN_SEARCH_PATH,
                   NULL, NULL, NULL, NULL, &exit_status, &err);
