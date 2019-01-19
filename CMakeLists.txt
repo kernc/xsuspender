@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8 FATAL_ERROR)
 
 project (xsuspender C)
-set (PROJECT_VERSION 1.0)
+set (PROJECT_VERSION 1.1)
 
 if (NOT CMAKE_BUILD_TYPE)
     set (CMAKE_BUILD_TYPE Release)
