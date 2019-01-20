@@ -7,6 +7,6 @@
 
 
 int xsus_exec_subprocess (char **argv, WindowEntry *entry);
-int xsus_kill_subtree (pid_t pid, int signal, char *cmd_pattern);
+void xsus_kill_subtree (pid_t pid, int signal, char *cmd_pattern);
 
 #endif  // XSUSPENDER_SUBPROCESS_H
