@@ -9,14 +9,16 @@
 static inline
 int
 execute (char **argv,
-         char **envp)
+         char **envp,
+         char **stdout)
 {
     g_autoptr (GError) err = NULL;
     gint exit_status = -1;
-    GSpawnFlags flags = G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL;
+    GSpawnFlags flags = G_SPAWN_STDERR_TO_DEV_NULL |
+                        (stdout ? G_SPAWN_DEFAULT : G_SPAWN_STDOUT_TO_DEV_NULL);
 
     g_spawn_sync (NULL, argv, envp, flags | G_SPAWN_SEARCH_PATH,
-                  NULL, NULL, NULL, NULL, &exit_status, &err);
+                  NULL, NULL, stdout, NULL, &exit_status, &err);
     if (err)
         g_warning ("Unexpected subprocess execution error: %s", err->message);
 
@@ -43,7 +45,7 @@ xsus_exec_subprocess (char **argv,
 
     // Execute and return result
     g_debug ("Exec %#lx (%d): %s", entry->xid, entry->pid, argv[2]);
-    int exit_status = execute (argv, envp);
+    int exit_status = execute (argv, envp, NULL);
     g_debug ("Exit status: %d", exit_status);
 
     // Free envp
@@ -53,44 +55,41 @@ xsus_exec_subprocess (char **argv,
 }
 
 
-int
+static
+void
+kill_recursive (char* pid_str, int signal, char* cmd_pattern)
+{
+    // Kill the process
+    g_debug ("    -  %s", pid_str);
+    kill ((pid_t) g_ascii_strtoll (pid_str, NULL, 10), signal);
+
+    // Pgrep its children
+    char *argv[] = {"pgrep", "-fP", pid_str, cmd_pattern, NULL};
+    g_autofree char *standard_output = NULL;
+    execute (argv, NULL, &standard_output);
+    if (! standard_output)
+        return;  // No children
+
+    // Recurse
+    g_auto (GStrv) child_pids = g_strsplit (g_strstrip (standard_output), "\n", 0);
+    for (int i = 0; child_pids[i]; ++i)
+        kill_recursive (child_pids[i], signal, cmd_pattern);
+}
+
+
+void
 xsus_kill_subtree (pid_t pid,
                    int signal,
                    char *cmd_pattern)
 {
     if (! cmd_pattern)
-        return 0;
+        return;
 
     g_assert (signal == SIGSTOP || signal == SIGCONT);
-    char *sig = signal == SIGSTOP ? "STOP" : "CONT";
 
-    // Prefer this short script to using pstree (induces extra dependency)
-    // or involved parsing of /proc
-    g_autofree char *script = g_strdup_printf (
-        "pid=%d\n"
-            "ps_output=\"$(ps -e -o ppid,pid,cmd | awk \"/%s/\"'{ print $1, $2 }')\"\n"
-            "while [ \"$pid\" ]; do\n"
-            "    pid=\"$(echo \"$ps_output\" | awk \"/^($pid) /{ print \\$2 }\")\"\n"
-            "    echo -n $pid\" \"\n"
-            "    pid=\"$(echo \"$pid\" | paste -sd '|' -)\"\n"
-            "done%s | xargs kill -%s 2>/dev/null",
-        pid, cmd_pattern, (IS_DEBUG ? " | tee /dev/fd/2" : ""), sig);
-
-    char *argv[] = {
-        "sh", "-c", script, NULL};
-    char *envp[] = {
-        g_strdup_printf ("PATH=%s", g_getenv ("PATH")),
-        g_strdup_printf ("LC_ALL=C"),  // Speeds up locale-aware awk
-        NULL
-    };
-
-    // Execute and return result
-    g_debug ("Exec: pstree %d | kill -%s", pid, sig);
-    int exit_status = execute (argv, envp);
-    g_debug ("Exit status: %d", exit_status);
-
-    // Free envp
-    char **e = envp; while (*e) g_free(*e++);
-
-    return exit_status;
+    g_debug ("Exec: pstree %d (%s) | kill -%s",
+             pid, cmd_pattern, signal == SIGSTOP ? "STOP" : "CONT");
+    char pid_str[11];
+    g_snprintf ((char*) &pid_str, sizeof (pid_str), "%d", pid);
+    kill_recursive (pid_str, signal, cmd_pattern);
 }
