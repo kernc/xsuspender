@@ -207,14 +207,33 @@ gboolean
 is_on_ac_power ()
 {
 #ifdef __linux__
-    int exit_status = -1;
-    // Read AC power state. Should work in most cases. See: https://bugs.debian.org/473629
-    char *argv[] = {"sh", "-c", "grep -q 1 /sys/class/power_supply/*/online", NULL};
-    g_spawn_sync (NULL, argv, NULL,
-                  G_SPAWN_SEARCH_PATH | G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
-                  NULL, NULL, NULL, NULL, &exit_status, NULL);
-    gboolean is_ac_power = exit_status == 0;
-    return is_ac_power;
+    // Read AC power state from /sys/class/power_supply/*/online (== 1 on AC).
+    // Should work in most cases. See: https://bugs.debian.org/473629
+
+    const char *DIRNAME = "/sys/class/power_supply";
+    const char *basename;
+    g_autoptr (GError) err = NULL;
+    g_autoptr (GDir) dir = g_dir_open (DIRNAME, 0, &err);
+
+    if (err) {
+        g_warning ("Cannot read battery status: %s", err->message);
+        return FALSE;
+    }
+
+    while ((basename = g_dir_read_name (dir))) {
+        g_autofree char* filename = g_build_filename (DIRNAME, basename, "online", NULL);
+        g_autofree char* contents = NULL;
+
+        g_debug ("Reading '%s'", filename);
+        if (! g_file_get_contents (filename, &contents, NULL, &err)) {
+            g_debug ("Cannot read '%s': %s", filename, err->message);
+            continue;
+        }
+
+        if (g_strcmp0 (g_strstrip (contents), "1") == 0)
+            return TRUE;
+    }
+    return FALSE;
 #else
     #warning "No battery / AC status support for your platform."
     #warning "Defaulting to as if 'always on battery' behavior. Patches welcome!"
