@@ -1,0 +1,4 @@
+# Compulsory line, this is a version 3 file
+version=3
+
+https://github.com/kernc/xsuspender/tags .*/(\d[\d\.]*)\.tar\.gz

@@ -1,0 +1,4 @@
+# Format:
+#  relative_files_from   installed_to
+
+data/xsuspender.desktop   etc/xdg/autostart/

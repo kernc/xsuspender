@@ -1,0 +1,25 @@
+Source: xsuspender
+Section: x11
+Priority: optional
+Maintainer: Kernc <kerncece@gmail.com>
+Build-Depends: debhelper (>= 9)
+  , cmake
+  , pkg-config
+  , libglib2.0-dev
+  , libwnck-3-dev
+Standards-Version: 4.0.0
+Homepage: https://kernc.github.io/xsuspender/
+Vcs-Git: git://github.com/kernc/xsuspender.git
+Vcs-Browser: https://github.com/kernc/xsuspender
+
+Package: xsuspender
+Architecture: any
+Depends: ${misc:Depends}
+ , ${shlibs:Depends}
+ , procps
+ , awk
+Description: Auto-suspend inactive X11 applications
+ XSuspender configurably suspends GUI applications shortly after
+ its windows become unfocused to extend battery life. When
+ application window regains focus, it is transparently resumed
+ exactly where it had left of.
