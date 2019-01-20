@@ -1,6 +1,11 @@
 language: c
 dist: xenial
 sudo: false
+branches:
+  only:
+  - master
+  # Tags
+  - /^(\d+\.)+\d+(\.\S+)?$/
 
 compiler:
   - clang
