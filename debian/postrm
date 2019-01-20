@@ -21,8 +21,8 @@ set -e
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
 
-        if command -v pgrep >/dev/null; then
-            pgrep -f /usr/bin/xsuspender | xargs -r -- kill -TERM
+        if command -v pkill >/dev/null; then
+            pkill -TERM -f /usr/bin/xsuspender
         fi
 
     ;;

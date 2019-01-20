@@ -1,3 +1,9 @@
+xsuspender (1.1-1) UNRELEASED; urgency=low
+
+  * Upstream 1.1 release.
+
+ -- Kernc <kerncece@gmail.com>  Sun, 20 Jan 2019 16:49:46 +0100
+
 xsuspender (1.0-1~rc0) UNRELEASED; urgency=low
 
   * Initial release candidate.

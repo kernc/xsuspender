@@ -17,7 +17,6 @@ Architecture: any
 Depends: ${misc:Depends}
  , ${shlibs:Depends}
  , procps
- , awk
 Description: Auto-suspend inactive X11 applications
  XSuspender configurably suspends GUI applications shortly after
  its windows become unfocused to extend battery life. When
