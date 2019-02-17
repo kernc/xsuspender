@@ -38,6 +38,7 @@ gboolean xsus_signal_continue (WindowEntry *entry);
 void     xsus_window_entry_enqueue (WindowEntry *entry, unsigned delay);
 void     xsus_window_suspend (WnckWindow *window);
 void     xsus_window_resume (WnckWindow *window);
+void     xsus_resume_all ();
 int      xsus_init ();
 void     xsus_exit ();
 

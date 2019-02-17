@@ -150,6 +150,19 @@ xsus_window_suspend (WnckWindow *window)
 }
 
 
+void
+xsus_resume_all ()
+{
+    g_debug ("Resuming all windows ...");
+    GSList *l = suspended_entries;
+    while (l) {
+        WindowEntry *entry = l->data;
+        l = l->next;
+        xsus_signal_continue (entry);
+    }
+}
+
+
 int
 xsus_init ()
 {
@@ -173,6 +186,9 @@ xsus_init ()
     queued_entries = NULL;
 
     xsus_init_event_handlers ();
+
+    // Install SIGUSR1 signal handler that resumes all suspended processes
+    signal (SIGUSR1, xsus_resume_all);
 
     // Install exit signal handlers to exit gracefully
     signal (SIGINT,  xsus_exit);
@@ -200,13 +216,7 @@ cleanup ()
     wnck_shutdown ();
 
     // Resume processes we have suspended; deallocate window entries
-    GSList *l = suspended_entries;
-    while (l) {
-        WindowEntry *entry = l->data;
-        l = l->next;
-        xsus_signal_continue (entry);
-    }
-
+    xsus_resume_all ();
     for (GSList *e = queued_entries; e; e = e->next)
         xsus_window_entry_free (e->data);
 
