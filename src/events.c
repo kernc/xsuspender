@@ -1,8 +1,9 @@
 #include "events.h"
 
 #include <glib.h>
-
 #include <libwnck/libwnck.h>
+
+#include <sys/param.h>
 #include <time.h>
 
 #include "entry.h"
@@ -234,6 +235,20 @@ is_on_ac_power ()
             return TRUE;
     }
     return FALSE;
+
+#elif defined(__unix__) && defined(BSD) && !defined(__APPLE__)
+    // On *BSD, run `apm -a` which returns '1' when AC is online
+    g_autoptr (GError) err = NULL;
+    g_autofree char *standard_output = NULL;
+    char *argv[] = {"apm", "-a", NULL};
+
+    g_spawn_sync (NULL, argv, NULL, G_SPAWN_SEARCH_PATH | G_SPAWN_STDERR_TO_DEV_NULL,
+                  NULL, NULL, &standard_output, NULL, NULL, &err);
+    if (err)
+        g_warning ("Unexpected `apm -a` execution error: %s", err->message);
+
+    return standard_output && 0 == g_strcmp0 (g_strstrip (standard_output), "1");
+
 #else
     #warning "No battery / AC status support for your platform."
     #warning "Defaulting to as if 'always on battery' behavior. Patches welcome!"
