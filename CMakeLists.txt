@@ -20,10 +20,13 @@ add_definitions (-DPROJECT_NAME="${PROJECT_NAME}"
                  -DPROJECT_VERSION="${PROJECT_VERSION}"
                  -DEXAMPLE_CONF="${CMAKE_INSTALL_PREFIX}/${example_dir}/${PROJECT_NAME}.conf")
 
+# For CMAKE_INSTALL_SYSCONFDIR below
+include (GNUInstallDirs)
+
 install (FILES       data/${PROJECT_NAME}.conf
          DESTINATION ${example_dir})
 install (FILES       data/${PROJECT_NAME}.desktop
-         DESTINATION etc/xdg/autostart)
+         DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/xdg/autostart)
 install (FILES       doc/${PROJECT_NAME}.1
          DESTINATION share/man/man1)
 
