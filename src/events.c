@@ -217,7 +217,7 @@ is_on_ac_power ()
     g_autoptr (GDir) dir = g_dir_open (DIRNAME, 0, &err);
 
     if (err) {
-        g_warning ("Cannot read battery status: %s", err->message);
+        g_warning ("Cannot read battery/AC status: %s", err->message);
         return FALSE;
     }
 
@@ -225,11 +225,8 @@ is_on_ac_power ()
         g_autofree char *filename = g_build_filename (DIRNAME, basename, "online", NULL);
         g_autofree char *contents = NULL;
 
-        g_debug ("Reading '%s'", filename);
-        if (! g_file_get_contents (filename, &contents, NULL, &err)) {
-            g_debug ("Cannot read '%s': %s", filename, err->message);
+        if (! g_file_get_contents (filename, &contents, NULL, NULL))
             continue;
-        }
 
         if (g_strcmp0 (g_strstrip (contents), "1") == 0)
             return TRUE;
