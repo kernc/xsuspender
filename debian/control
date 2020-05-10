@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 9)
   , pkg-config
   , libglib2.0-dev
   , libwnck-3-dev
-Standards-Version: 4.0.0
+Standards-Version: 4.5.0
 Homepage: https://kernc.github.io/xsuspender/
 Vcs-Git: git://github.com/kernc/xsuspender.git
 Vcs-Browser: https://github.com/kernc/xsuspender
