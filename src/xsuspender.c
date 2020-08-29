@@ -19,6 +19,14 @@
 static
 GMainLoop *loop;
 
+gboolean IS_DEBUG;
+gboolean is_battery_powered;
+
+GSList *suspended_entries;
+GSList *queued_entries;
+
+Rule **rules;
+
 
 gboolean
 xsus_signal_stop (WindowEntry *entry)

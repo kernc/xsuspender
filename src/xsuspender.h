@@ -24,13 +24,13 @@
 #endif
 
 
-gboolean IS_DEBUG;
-gboolean is_battery_powered;
+extern gboolean IS_DEBUG;
+extern gboolean is_battery_powered;
 
-GSList *suspended_entries;   // List of suspended WindowEntry
-GSList *queued_entries;
+extern GSList *suspended_entries;   // List of suspended WindowEntry
+extern GSList *queued_entries;
 
-Rule **rules;  // Matching rules from config files
+extern Rule **rules;  // Matching rules from config files
 
 
 gboolean xsus_signal_stop (WindowEntry *entry);
