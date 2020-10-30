@@ -60,8 +60,14 @@ Install binary package for your GNU/Linux distribution:
 
 ```bash
 # Install build dependencies, namely GLib and Libwnck
+# on Debian / Ubuntu / Mint:
 sudo apt install libglib2.0-dev \
                  libwnck-3-dev  \
+                 make cmake gcc pkg-config
+
+# on Fedora / RHEL / CentOS / Solus:
+sudo dnf install glib2-devel   \
+                 libwnck-devel \
                  make cmake gcc pkg-config
 ```
 
