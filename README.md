@@ -59,15 +59,17 @@ Install binary package for your GNU/Linux distribution:
 #### From Source
 
 ```bash
-# Install build dependencies, namely GLib and Libwnck
+# Install dependencies, namely GLib, Libwnck, procps
 # on Debian / Ubuntu / Mint:
 sudo apt install libglib2.0-dev \
                  libwnck-3-dev  \
+                 procps         \
                  make cmake gcc pkg-config
 
 # on Fedora / RHEL / CentOS / Solus:
 sudo dnf install glib2-devel   \
                  libwnck-devel \
+                 procps-ng     \
                  make cmake gcc pkg-config
 ```
 
