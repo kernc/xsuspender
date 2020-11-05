@@ -35,5 +35,5 @@ Check for leaks with:
 
     G_SLICE=always-malloc \
     G_DEBUG=gc-friendly   \
-    G_MESSAGES_DEBUG=all  \
+    G_MESSAGES_DEBUG=xsuspender  \
       valgrind --leak-check=full --show-leak-kinds=definite xsuspender

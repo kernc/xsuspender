@@ -101,10 +101,10 @@ xsuspender --help
 #### Configuration debugging
 
 To have it print verbose debug messages about what it is doing, run the
-program with environmental variable `G_MESSAGES_DEBUG=all` set:
+program with environmental variable `G_MESSAGES_DEBUG=xsuspender` set:
 
-    G_MESSAGES_DEBUG=all xsuspender
-    
+    G_MESSAGES_DEBUG=xsuspender xsuspender
+
 This is _strongly recommended_ to confirm your customized configuration
 rules indeed work as you expect.
 
