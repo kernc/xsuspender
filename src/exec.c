@@ -1,5 +1,7 @@
 #include "exec.h"
 
+#include <string.h>
+
 #include <signal.h>
 #include <sys/types.h>
 
@@ -59,21 +61,23 @@ static
 void
 kill_recursive (char* pid_str, int signal, char* cmd_pattern)
 {
-    // Kill the process
-    g_debug ("    -  %s", pid_str);
-    kill ((pid_t) g_ascii_strtoll (pid_str, NULL, 10), signal);
-
-    // Pgrep its children
+    // Pgrep children
     char *argv[] = {"pgrep", "-fP", pid_str, cmd_pattern, NULL};
     g_autofree char *standard_output = NULL;
     execute (argv, NULL, &standard_output);
-    if (! standard_output)
+    if (! standard_output || 0 == strlen(g_strstrip (standard_output)))
         return;  // No children
 
-    // Recurse
-    g_auto (GStrv) child_pids = g_strsplit (g_strstrip (standard_output), "\n", 0);
-    for (int i = 0; child_pids[i]; ++i)
+    standard_output = g_strdelimit(standard_output, "\n", ' ');
+    g_debug ("      kill -%s %s", signal == SIGSTOP ? "STOP" : "CONT", standard_output);
+
+    // Kill children and recurse
+    g_auto (GStrv) child_pids = g_strsplit (standard_output, " ", 0);
+    for (int i = 0; child_pids[i]; ++i) {
+        pid_t child_pid = g_ascii_strtoll (child_pids[i], NULL, 10);
+        kill (child_pid, signal);
         kill_recursive (child_pids[i], signal, cmd_pattern);
+    }
 }
 
 
@@ -89,6 +93,9 @@ xsus_kill_subtree (pid_t pid,
 
     g_debug ("Exec: pstree %d (%s) | kill -%s",
              pid, cmd_pattern, signal == SIGSTOP ? "STOP" : "CONT");
+    g_debug ("      kill -%s %d", signal == SIGSTOP ? "STOP" : "CONT", pid);
+    kill (pid, signal);
+
     char pid_str[11];
     g_snprintf ((char*) &pid_str, sizeof (pid_str), "%d", pid);
     kill_recursive (pid_str, signal, cmd_pattern);
