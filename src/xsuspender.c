@@ -19,7 +19,6 @@
 static
 GMainLoop *loop;
 
-gboolean IS_DEBUG;
 gboolean is_battery_powered;
 
 GSList *suspended_entries;
@@ -162,7 +161,6 @@ int
 xsus_init ()
 {
     g_debug ("Initializing.");
-    IS_DEBUG = g_getenv ("G_MESSAGES_DEBUG") ? TRUE: FALSE;
 
     // Nowadays common to have a single screen which combines several physical
     // monitors. So it's ok to take the default. See:

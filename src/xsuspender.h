@@ -24,7 +24,6 @@
 #endif
 
 
-extern gboolean IS_DEBUG;
 extern gboolean is_battery_powered;
 
 extern GSList *suspended_entries;   // List of suspended WindowEntry
