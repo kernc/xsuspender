@@ -1,0 +1,22 @@
+name: Deploy docs
+on:
+  push:
+    tags: ['[0-9]+.[0-9]+.*']
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt install groff
+
+      - name: Deploy
+        env:
+          GH_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: .github/deploy-gh-pages.sh

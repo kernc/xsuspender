@@ -1,0 +1,47 @@
+name: CI
+on:
+  push: { branches: [master] }
+  pull_request: { branches: [master] }
+  schedule: [ cron: '3 15 * * 6' ]  # Every Saturday, 03:15
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt install libglib2.0-dev libwnck-3-dev procps make cmake gcc pkg-config
+
+      - name: Install lint dependencies
+        run: |
+          sudo apt install cppcheck groff
+          pip install --user cpplint
+
+      - name: Lint
+        run: |
+          ./lint.sh
+          ! groff -wall -mandoc -Thtml doc/xsuspender.1 |& grep ' warning: '
+
+      - name: Build
+        env:
+          CC: ${{ matrix.compiler }}
+          DISPLAY: mock-for-later
+        run: |
+          cd build
+          cmake -DCMAKE_C_FLAGS=-Werror -DCMAKE_INSTALL_PREFIX=~ ..
+          make
+          make install
+          cpack
+
+      - name: Test
+        run: |
+          xvfb-run make test

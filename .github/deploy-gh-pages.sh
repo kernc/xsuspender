@@ -8,7 +8,7 @@ set -eu
 
 head=$(git rev-parse HEAD)
 
-git clone -b gh-pages "https://kernc:$GH_PASSWORD@github.com/$TRAVIS_REPO_SLUG.git" gh-pages
+git clone -b gh-pages "https://kernc:$GH_PASSWORD@github.com/$GITHUB_REPOSITORY.git" gh-pages
 groff -wall -mandoc -Thtml doc/xsuspender.1 > gh-pages/xsuspender.1.html
 cd gh-pages
 
@@ -17,5 +17,11 @@ sed -i "s#</body>#$ANALYTICS</body>#i" xsuspender.1.html
 
 git add *
 git diff --staged --quiet && echo "$0: No changes to commit." && exit 0
-git commit -am "CI: Update xsuspender.1.html from $TRAVIS_TAG ($head)"
+
+if ! git config user.name; then
+    git config user.name 'github-actions'
+    git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+fi
+
+git commit -am "CI: Update xsuspender.1 from ${GITHUB_REF#refs/tags/} ($head)"
 git push
