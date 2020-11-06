@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 ROOT="$(dirname "$0")"
 PATH="$PATH:$HOME/.local/bin"
@@ -10,7 +10,6 @@ error () { echo "ERROR: $@" >&2; exit 1; }
 cppcheck --error-exitcode=1 \
     --enable=warning,performance,portability,unusedFunction,missingInclude \
     --suppress=unusedFunction:"$ROOT/src/macros.h" \
-    -Ug_auto -Ug_autofree -Ug_autoptr \
     "$ROOT"/src/*.[ch]
 
 cpplint --counting=detailed --recursive \
