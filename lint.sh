@@ -12,9 +12,7 @@ cppcheck --error-exitcode=1 \
     --suppress=unusedFunction:"$ROOT/src/macros.h" \
     "$ROOT"/src/*.[ch]
 
-cpplint --counting=detailed --recursive \
-    --filter=-build/endif_comment \
-    "$ROOT"/src
+cpplint --counting=detailed --recursive "$ROOT"/src
 
 grep -RF $'\t' "$ROOT"/src &&
     error 'Tabs found. Use spaces.' || echo 'Whitespace OK'
