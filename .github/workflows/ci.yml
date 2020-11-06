@@ -19,12 +19,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt install --no-install-recommends \
+          sudo apt install \
             libglib2.0-dev libwnck-3-dev procps make cmake gcc pkg-config
 
       - name: Install lint dependencies
         run: |
-          sudo apt install --no-install-recommends cppcheck groff python3-wheel
+          sudo apt install cppcheck groff python3-wheel
           pip3 install --user cpplint
 
       - name: Lint
@@ -32,7 +32,7 @@ jobs:
           ./lint.sh
           ! groff -wall -mandoc -Thtml doc/xsuspender.1 |& grep ' warning: '
 
-      - name: Build
+      - name: Build & Test
         env:
           CC: ${{ matrix.compiler }}
           DISPLAY: mock-for-later
@@ -42,7 +42,4 @@ jobs:
           make
           make install
           cpack
-
-      - name: Test
-        run: |
           xvfb-run make test
