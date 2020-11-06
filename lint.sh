@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -ex
 
 ROOT="$(dirname "$0")"
 PATH="$PATH:$HOME/.local/bin"
