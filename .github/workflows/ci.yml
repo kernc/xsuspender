@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt install \
-            libglib2.0-dev libwnck-3-dev procps make cmake gcc pkg-config
+            libglib2.0-dev libwnck-3-dev procps make cmake pkg-config
 
       - name: Install lint dependencies
         if: matrix.compiler == 'gcc'
