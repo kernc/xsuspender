@@ -4,7 +4,9 @@ XSuspender
 
 Automatically suspend inactive X11 applications.
 
-Find a better maintained description here: https://kernc.github.io/xsuspender/
+[XSuspender project website](https://kernc.github.io/xsuspender/)
+
+[![Star](https://i.imgur.com/LSI6p6O.png)](#top) the project if you use it.
 
 When an application window loses focus, XSuspender tries to match it to
 one of the rules in its configuration. If a match is found, the
@@ -66,7 +68,7 @@ sudo apt install libglib2.0-dev \
                  procps         \
                  make cmake gcc pkg-config
 
-# on Fedora / RHEL / CentOS / Solus:
+# on Fedora / RHEL / openSUSE / Solus:
 sudo dnf install glib2-devel   \
                  libwnck-devel \
                  procps-ng     \
