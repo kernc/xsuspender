@@ -1,3 +1,10 @@
+xsuspender (1.3-1) UNRELEASED; urgency=low
+
+  * Fix linking with GCC 10+
+  * Other minor upstream fixes.
+
+ -- Kernc <kerncece@gmail.com>  Tue, 19 Oct 2021 01:33:31 +0200
+
 xsuspender (1.2-2) UNRELEASED; urgency=low
 
   * Avoid lintian warnings.
