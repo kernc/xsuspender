@@ -58,6 +58,12 @@ Install binary package for your GNU/Linux distribution:
 [![Arch Linux](doc/arch.svg)](https://aur.archlinux.org/packages/xsuspender-git/)
 
 
+You can convert it to the RPM format with [Alien](https://joeyh.name/code/alien/):
+
+```
+sudo alien --to-rpm xsuspender.deb
+```
+
 #### From Source
 
 ```bash
