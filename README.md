@@ -6,8 +6,6 @@ Automatically suspend inactive X11 applications.
 
 [XSuspender project website](https://kernc.github.io/xsuspender/)
 
-[![Star](https://i.imgur.com/LSI6p6O.png)](#top) the project if you use it.
-
 When an application window loses focus, XSuspender tries to match it to
 one of the rules in its configuration. If a match is found, the
 application is sent a SIGSTOP signal (preventing the process from obtaining
@@ -45,7 +43,11 @@ continued where it had left off.
 * Relies on windows having their `_NET_WM_PID` hint set correctly.
 * Won't work in remote X sessions.
 * Won't work with Wayland.
- 
+
+See section [_BUGS_ in the manual] for the full, updated list.
+
+[_BUGS_ in the manual]: https://kernc.github.io/xsuspender/xsuspender.1.html#BUGS
+
 
 Installation
 ------------
