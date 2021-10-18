@@ -1,5 +1,5 @@
-<!-- Creator     : groff version 1.22.3 -->
-<!-- CreationDate: Sun May 10 23:28:31 2020 -->
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Oct 18 23:38:43 2021 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -39,8 +39,8 @@
 </h2>
 
 
-<p style="margin-left:11%; margin-top: 1em">xsuspender
-&minus; auto-suspend inactive X11 applications</p>
+<p style="margin-left:11%; margin-top: 1em">xsuspender -
+auto-suspend inactive X11 applications</p>
 
 <h2>SYNOPSIS
 <a name="SYNOPSIS"></a>
@@ -69,10 +69,10 @@ execution exactly where it had left off.</p>
 
 <p style="margin-left:11%; margin-top: 1em">This may result
 in significant reduction in CPU use which prolongs battery
-run-time (5&minus;500%; subject to user&rsquo;s computing
-habits), reduces CPU fan noise, and prevents
-resource-hogging applications from plotting stuff behind
-your back at least when you are not actively using them.</p>
+run-time (5-500%; subject to user&rsquo;s computing habits),
+reduces CPU fan noise, and prevents resource-hogging
+applications from plotting stuff behind your back at least
+when you are not actively using them.</p>
 
 <p style="margin-left:11%; margin-top: 1em">The method also
 has its share of drawbacks. See section <b>BUGS</b>
@@ -85,7 +85,7 @@ below.</p>
 
 <p style="margin-left:11%; margin-top: 1em">The program is
 mainly run without arguments. <b><br>
-&minus;h</b>, <b>&minus;&minus;help</b></p>
+-h</b>, <b>--help</b></p>
 
 <p style="margin-left:22%;">Print short help and exit.</p>
 
@@ -98,8 +98,9 @@ mainly run without arguments. <b><br>
 <p style="margin-left:11%; margin-top: 1em"><b>G_MESSAGES_DEBUG</b></p>
 
 <p style="margin-left:22%;">Set
-<b>G_MESSAGES_DEBUG</b>=<i>all</i> to have the program
-report debug messages of its activity to standard error.</p>
+<b>G_MESSAGES_DEBUG</b>=<i>xsuspender</i> to have the
+program report debug messages of its activity to standard
+error.</p>
 
 <p style="margin-left:11%;"><b>XDG_CONFIG_HOME</b></p>
 
@@ -125,7 +126,7 @@ program.</p>
 when the variable is set.</p>
 
 
-<p style="margin-left:11%;"><i>share/xsuspender/xsuspender.conf.example</i></p>
+<p style="margin-left:11%;"><i>share/doc/xsuspender/examples/xsuspender.conf</i></p>
 
 <p style="margin-left:22%;">Example configuration file
 shipped with the program.</p>
@@ -147,7 +148,7 @@ manager.</p>
 
 
 <p style="margin-left:11%; margin-top: 1em">Configuration
-key&minus;value file is in INI format. Notice:</p>
+key-value file is in INI format. Notice:</p>
 
 <table width="100%" border="0" rules="none" frame="void"
        cellspacing="0" cellpadding="0">
@@ -445,34 +446,43 @@ issue tracker</a>.</p>
 
 <p style="margin-left:11%; margin-top: 1em">Example
 configuration section for VirtualBox:</p>
-<pre style="margin-left:17%; margin-top: 1em"># This is a comment.
 
-[Default]
-suspend_delay = 10
-resume_every = 50
-resume_for = 5
-only_on_battery = true
-auto_suspend_on_battery = true
-send_signals = true
+<p style="margin-left:17%; margin-top: 1em"># This is a
+comment.</p>
 
-# Rule name is an alphanumeric string.
-# Rule VirtualBox inherits from Default rule
+<p style="margin-left:17%; margin-top: 1em">[Default] <br>
+suspend_delay = 10 <br>
+resume_every = 50 <br>
+resume_for = 5 <br>
+only_on_battery = true <br>
+auto_suspend_on_battery = true <br>
+send_signals = true</p>
 
-[VirtualBox]
-match_wm_class_contains = VirtualBox
+<p style="margin-left:17%; margin-top: 1em"># Rule name is
+an alphanumeric string. <br>
+# Rule VirtualBox inherits from Default rule</p>
 
-# VirtualBox suspension is managed by VBoxManage utility.
-send_signals = false
+<p style="margin-left:17%; margin-top: 1em">[VirtualBox]
+<br>
+match_wm_class_contains = VirtualBox</p>
 
+<p style="margin-left:17%; margin-top: 1em"># VirtualBox
+suspension is managed by VBoxManage utility. <br>
+send_signals = false</p>
 
-# We get the VM UUID via its process command line.
+<p style="margin-left:17%; margin-top: 1em"># We get the VM
+UUID via its process command line. <br>
 # NOTE: Unlike in this example, the whole script should be
-# on a single line.
-exec_suspend = VBoxManage controlvm &quot;$(ps -o args= -q $PID | \
-               sed -E &rsquo;s/.*--startvm ([a-f0-9-]+).*/\1/&rsquo;)&quot; pause
-exec_resume  = VBoxManage controlvm &quot;$(ps -o args= -q $PID | \
-               sed -E &rsquo;s/.*--startvm ([a-f0-9-]+).*/\1/&rsquo;)&quot; resume</pre>
-
+<br>
+# on a single line. <br>
+exec_suspend = VBoxManage controlvm &quot;$(ps -o args= -q
+$PID | \ <br>
+sed -E &rsquo;s/.*--startvm ([a-f0-9-]+).*/\1/&rsquo;)&quot;
+pause <br>
+exec_resume = VBoxManage controlvm &quot;$(ps -o args= -q
+$PID | \ <br>
+sed -E &rsquo;s/.*--startvm ([a-f0-9-]+).*/\1/&rsquo;)&quot;
+resume</p>
 
 <p style="margin-left:11%; margin-top: 1em">Find further
 examples in example configuration file accompanying this
@@ -482,7 +492,7 @@ distribution (see section <b>FILES</b> above).</p>
 configuration rules, run:</p>
 
 
-<p style="margin-left:17%; margin-top: 1em">G_MESSAGES_DEBUG=all
+<p style="margin-left:17%; margin-top: 1em">G_MESSAGES_DEBUG=xsuspender
 xsuspender</p>
 
 <h2>SEE ALSO
