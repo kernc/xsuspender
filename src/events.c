@@ -8,6 +8,7 @@
 
 #include "entry.h"
 #include "macros.h"
+#include "proc.h"
 
 
 void
@@ -69,7 +70,7 @@ windows_are_same_process (WnckWindow *w1,
     Rule *rule;
     return (WNCK_IS_WINDOW (w1) &&
             WNCK_IS_WINDOW (w2) &&
-            wnck_window_get_pid (w1) == wnck_window_get_pid (w2) &&
+            xsus_window_get_pid (w1) == xsus_window_get_pid (w2) &&
             (rule = xsus_window_get_rule (w1)) &&
             rule->send_signals &&
             rule == xsus_window_get_rule (w2));
@@ -104,7 +105,7 @@ pid_t
 window_entry_get_pid (WindowEntry *entry)
 {
     WnckWindow *window = wnck_window_get (entry->xid);
-    return window && wnck_window_get_pid (window) == entry->pid ? entry->pid : 0;
+    return window && xsus_window_get_pid (window) == entry->pid ? entry->pid : 0;
 }
 
 
@@ -411,7 +412,7 @@ on_update_downclocked_processes ()
             continue;
 
         // Skip any windows/PIDs we already know about
-        pid_t pid = wnck_window_get_pid (window);
+        pid_t pid = xsus_window_get_pid (window);
         if (g_hash_table_contains (old_pids, GINT_TO_POINTER (pid)) ||
             g_hash_table_contains (new_pids, GINT_TO_POINTER (pid)))
             continue;

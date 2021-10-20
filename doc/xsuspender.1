@@ -202,6 +202,12 @@ This setting only applies when
 .B send_signals
 is also true.
 .TP
+.BR process_name
+If provided, XSuspender will ignore _NET_WM_PID and instead detect
+the process a window matching this rule belongs to by looking for
+a process with this name. There should be only one process with this
+name, not including its child processes.
+.TP
 .BR exec_suspend
 .TQ
 .BR exec_resume

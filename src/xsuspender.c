@@ -13,6 +13,7 @@
 #include "events.h"
 #include "exec.h"
 #include "macros.h"
+#include "proc.h"
 #include "rule.h"
 
 
@@ -108,7 +109,7 @@ xsus_window_resume (WnckWindow *window)
     if ((entry = xsus_entry_find_for_window_rule (window, rule, queued_entries))) {
         g_debug ("Removing window %#lx (%d) from suspension queue: %s",
                  wnck_window_get_xid (window),
-                 wnck_window_get_pid (window),
+                 xsus_window_get_pid (window),
                  wnck_window_get_name (window));
         queued_entries = g_slist_remove (queued_entries, entry);
         xsus_window_entry_free (entry);
@@ -119,7 +120,7 @@ xsus_window_resume (WnckWindow *window)
     if ((entry = xsus_entry_find_for_window_rule (window, rule, suspended_entries))) {
         g_debug ("Resuming window %#lx (%d): %s",
                  wnck_window_get_xid (window),
-                 wnck_window_get_pid (window),
+                 xsus_window_get_pid (window),
                  wnck_window_get_name (window));
         xsus_signal_continue (entry);
         return;
@@ -150,7 +151,7 @@ xsus_window_suspend (WnckWindow *window)
     g_debug ("Suspending window in %ds: %#lx (%d): %s",
              rule->delay,
              wnck_window_get_xid (window),
-             wnck_window_get_pid (window),
+             xsus_window_get_pid (window),
              wnck_window_get_name (window));
     WindowEntry *entry = xsus_window_entry_new (window, rule);
     xsus_window_entry_enqueue (entry, rule->delay);

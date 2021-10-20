@@ -17,6 +17,7 @@
 #define CONFIG_KEY_AUTO_ON_BATTERY         "auto_suspend_on_battery"
 #define CONFIG_KEY_SEND_SIGNALS            "send_signals"
 #define CONFIG_KEY_SUBTREE_PATTERN         "suspend_subtree_pattern"
+#define CONFIG_KEY_PROCESS_NAME            "process_name"
 #define CONFIG_KEY_DOWNCLOCK_ON_BATTERY    "downclock_on_battery"
 #define CONFIG_KEY_WM_NAME_CONTAINS        "match_wm_name_contains"
 #define CONFIG_KEY_WM_CLASS_CONTAINS       "match_wm_class_contains"
@@ -26,6 +27,7 @@
                             CONFIG_KEY_AUTO_ON_BATTERY,          \
                             CONFIG_KEY_SEND_SIGNALS,             \
                             CONFIG_KEY_SUBTREE_PATTERN,          \
+                            CONFIG_KEY_PROCESS_NAME,             \
                             CONFIG_KEY_DOWNCLOCK_ON_BATTERY,     \
                             CONFIG_KEY_SUSPEND_DELAY,            \
                             CONFIG_KEY_RESUME_EVERY,             \
