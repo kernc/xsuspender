@@ -205,8 +205,9 @@ is also true.
 .BR process_name
 If provided, XSuspender will ignore _NET_WM_PID and instead detect
 the process a window matching this rule belongs to by looking for
-a process with this name. There should be only one process with this
-name, not including its child processes.
+a process whose process name (cmdline[0]) matches this string verbatim.
+There should be only one such process not including its child processes.
+This is useful when _NET_WM_PID is incorrect or unset, e.g. with flatpak.
 .TP
 .BR exec_suspend
 .TQ
