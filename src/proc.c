@@ -20,9 +20,9 @@ cmdline_matches (char **cmdline, char *s)
 
 static
 proc_t*
-proc_by_pid (int pid)
+proc_by_pid (pid_t pid)
 {
-    int arr[2] = {pid, 0};
+    pid_t arr[2] = {pid, 0};
     PROCTAB *pt = openproc(PROC_FILLARG | PROC_FILLSTAT | PROC_PID, arr);
     proc_t *result = readproc(pt, NULL);
     closeproc(pt);
@@ -31,22 +31,22 @@ proc_by_pid (int pid)
 
 
 static
-int
+pid_t
 process_name_get_pid (char *process_name)
 {
     // Types match readproc.c
-    int cand_pid = 0;
+    pid_t cand_pid = 0;
     unsigned long long cand_start_time = ULLONG_MAX;  // NOLINT(runtime/int)
 
     PROCTAB *pt = openproc(PROC_FILLARG | PROC_FILLSTAT);
     proc_t *proc;
 
     while ((proc = readproc(pt, NULL))) {
-        int tree_cand_pid = 0;
+        pid_t tree_cand_pid = 0;
         unsigned long long tree_cand_start_time = ULLONG_MAX;  // NOLINT(runtime/int)
 
         // Some applications use multiple processes with the same name -- find the root one
-        int ppid;
+        pid_t ppid;
         do {
             if (cmdline_matches(proc->cmdline, process_name)) {
                 tree_cand_pid = proc->tid;
@@ -76,12 +76,12 @@ process_name_get_pid (char *process_name)
 }
 
 
-int
+pid_t
 xsus_window_get_pid (WnckWindow *window)
 {
     Rule *rule = xsus_window_get_rule (window);
     char *process_name = rule ? rule->process_name : NULL;
-    int pid_by_process_name = process_name ? process_name_get_pid(process_name) : 0;
+    pid_t pid_by_process_name = process_name ? process_name_get_pid(process_name) : 0;
     // Prefer getting the PID by process name so we can override _NET_WM_PID if it's wrong
     // (e.g. when using flatpak)
     return pid_by_process_name ? pid_by_process_name : wnck_window_get_pid(window);
