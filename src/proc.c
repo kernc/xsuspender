@@ -4,23 +4,6 @@
 #include "rule.h"
 
 
-typedef struct state {
-    GTree *procs;
-    char *process_name;
-    // Types match readproc.h
-    int cand_pid;
-    unsigned long long cand_start_time;  // NOLINT(runtime/int)
-} state;
-
-
-static
-int
-compare_ints (gconstpointer a, gconstpointer b, __attribute__((unused)) gpointer data)
-{
-    return GPOINTER_TO_INT(a) - GPOINTER_TO_INT(b);
-}
-
-
 static
 gboolean
 cmdline_matches (char **cmdline, char *s)
@@ -36,49 +19,13 @@ cmdline_matches (char **cmdline, char *s)
 
 
 static
-gboolean
-traverse_procs (__attribute__((unused)) gpointer pid, proc_t *proc, state *state)
+proc_t*
+proc_by_pid (int pid)
 {
-    int cand_pid = 0;
-    unsigned long long cand_start_time = ULLONG_MAX;  // NOLINT(runtime/int)
-
-    for (proc_t *cur = proc; cur; cur = g_tree_lookup(state->procs, GINT_TO_POINTER(cur->ppid))) {
-        if (cmdline_matches(cur->cmdline, state->process_name)) {
-            cand_pid = cur->tid;
-            cand_start_time = cur->start_time;
-        }
-    }
-
-    if (cand_pid != 0 && state->cand_pid != cand_pid) {
-        if (state->cand_pid != 0)
-            g_warning("Multiple processes named '%s': %u and %u",
-                      state->process_name, state->cand_pid, cand_pid);
-
-        if (cand_start_time < state->cand_start_time ||
-            (cand_start_time == state->cand_start_time &&
-             cand_pid < state->cand_pid)) {
-            // Update
-            state->cand_start_time = cand_start_time;
-            state->cand_pid = cand_pid;
-        }
-    }
-
-    return FALSE;
-}
-
-
-static
-GTree*
-get_processes ()
-{
-    GTree *result = g_tree_new_full(compare_ints, NULL, NULL, (GDestroyNotify) freeproc);
-    PROCTAB  *pt = openproc (PROC_FILLARG | PROC_FILLSTAT);
-    proc_t *proc;
-
-    while ((proc = readproc (pt, NULL)))
-        g_tree_insert (result, GINT_TO_POINTER(proc->tid), proc);
-
-    closeproc (pt);
+    int arr[2] = {pid, 0};
+    PROCTAB *pt = openproc(PROC_FILLARG | PROC_FILLSTAT | PROC_PID, arr);
+    proc_t *result = readproc(pt, NULL);
+    closeproc(pt);
     return result;
 }
 
@@ -87,17 +34,45 @@ static
 int
 process_name_get_pid (char *process_name)
 {
-    GTree *procs = get_processes();
+    // Types match readproc.c
+    int cand_pid = 0;
+    unsigned long long cand_start_time = ULLONG_MAX;  // NOLINT(runtime/int)
 
-    state state;
-    state.procs = procs;
-    state.process_name = process_name;
-    state.cand_pid = 0;
-    state.cand_start_time = ULLONG_MAX;
+    PROCTAB *pt = openproc(PROC_FILLARG | PROC_FILLSTAT);
+    proc_t *proc;
 
-    g_tree_foreach(procs, (GTraverseFunc) traverse_procs, &state);
-    g_tree_destroy (procs);
-    return state.cand_pid;
+    while ((proc = readproc(pt, NULL))) {
+        int tree_cand_pid = 0;
+        unsigned long long tree_cand_start_time = ULLONG_MAX;  // NOLINT(runtime/int)
+
+        // Some applications use multiple processes with the same name -- find the root one
+        int ppid;
+        do {
+            if (cmdline_matches(proc->cmdline, process_name)) {
+                tree_cand_pid = proc->tid;
+                tree_cand_start_time = proc->start_time;
+            }
+            ppid = proc->ppid;
+            freeproc(proc);
+        } while ((proc = proc_by_pid(ppid)));
+
+        if (tree_cand_pid != 0 && tree_cand_pid != cand_pid) {
+            if (cand_pid != 0)
+                g_warning("Multiple processes named '%s': %u and %u",
+                          process_name, cand_pid, tree_cand_pid);
+
+            if (tree_cand_start_time < cand_start_time ||
+                (tree_cand_start_time == cand_start_time &&
+                 tree_cand_pid < cand_pid)) {
+                // Update
+                cand_pid = tree_cand_pid;
+                cand_start_time = tree_cand_start_time;
+            }
+        }
+    }
+
+    closeproc(pt);
+    return cand_pid;
 }
 
 
