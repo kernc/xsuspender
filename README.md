@@ -96,12 +96,17 @@ sudo make install
 
 Usage
 -----
-For brief usage instructions, run:
+For brief usage instructions, run:auto
 
 ```bash
 xsuspender --help
 ```
 
+Upon installation there will be a `/etc/xdg/autostart/xsuspender.dektop`
+file which allows you to autostart xsuspender on the start of your
+desktop. You need to explicitly enable autostarting xsuspender in your
+desktop's session management settings.
+ 
 #### Configuration debugging
 
 To have it print verbose debug messages about what it is doing, run the
