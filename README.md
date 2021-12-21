@@ -102,6 +102,19 @@ For brief usage instructions, run:
 xsuspender --help
 ```
 
+#### Automatically starting xsuspender
+
+Upon installation there will be a `/etc/xdg/autostart/xsuspender.dektop`
+file which allows you to autostart xsuspender on the start of your
+desktop. You need to explicitly enable autostarting xsuspender in your
+desktop's session management settings - this amounts to the same as copying
+`/etc/xdg/autostart/xsuspender.dektop` to `~/.config/autostart/` and setting
+`Hidden=false`.
+
+If you let xsuspender autostart, then you need to be aware of spurious
+suspended app lock-ups such as in [GH-11](https://github.com/kernc/xsuspender/issues/11)
+and be ready to mitigate them.
+ 
 #### Configuration debugging
 
 To have it print verbose debug messages about what it is doing, run the
@@ -112,8 +125,10 @@ program with environmental variable `G_MESSAGES_DEBUG=xsuspender` set:
 This is _strongly recommended_ to confirm your customized configuration
 rules indeed work as you expect.
 
-If xsuspender is auto run by your X session manager, you might find clues
-to its unexpected behavior in _~/.xsession-errors_.
+#### Logs
+
+If xsuspender is autostarted by your X session manager, you might find clues
+to its unexpected behavior in `~/.xsession-errors`.
 
 Notes
 -----
