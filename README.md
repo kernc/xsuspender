@@ -112,7 +112,8 @@ desktop's session management settings - this amounts to the same as copying
 `Hidden=false`.
 
 If you let xsuspender autostart, then you need to be aware of spurious
-suspended app lock-ups such as in #11 and be ready to mitigate them.
+suspended app lock-ups such as in https://github.com/kernc/xsuspender/issues/11
+and be ready to mitigate them.
  
 #### Configuration debugging
 
