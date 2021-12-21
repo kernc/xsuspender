@@ -102,7 +102,7 @@ For brief usage instructions, run:
 xsuspender --help
 ```
 
-#### automatically starting xsuspender
+#### Automatically starting xsuspender
 
 Upon installation there will be a `/etc/xdg/autostart/xsuspender.dektop`
 file which allows you to autostart xsuspender on the start of your
@@ -124,8 +124,10 @@ program with environmental variable `G_MESSAGES_DEBUG=xsuspender` set:
 This is _strongly recommended_ to confirm your customized configuration
 rules indeed work as you expect.
 
-If xsuspender is auto run by your X session manager, you might find clues
-to its unexpected behavior in _~/.xsession-errors_.
+#### Logs
+
+If xsuspender is autostarted by your X session manager, you might find clues
+to its unexpected behavior in `~/.xsession-errors`.
 
 Notes
 -----
