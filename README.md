@@ -96,7 +96,7 @@ sudo make install
 
 Usage
 -----
-For brief usage instructions, run:auto
+For brief usage instructions, run:
 
 ```bash
 xsuspender --help
