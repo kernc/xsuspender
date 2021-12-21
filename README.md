@@ -102,10 +102,17 @@ For brief usage instructions, run:auto
 xsuspender --help
 ```
 
+#### automatically starting xsuspender
+
 Upon installation there will be a `/etc/xdg/autostart/xsuspender.dektop`
 file which allows you to autostart xsuspender on the start of your
 desktop. You need to explicitly enable autostarting xsuspender in your
-desktop's session management settings.
+desktop's session management settings - this amounts to the same as copying
+`/etc/xdg/autostart/xsuspender.dektop` to `~/.config/autostart/` and setting
+`Hidden=false`.
+
+If you let xsuspender autostart, then you need to be aware of spurious
+suspended app lock-ups such as in #11 and be ready to mitigate them.
  
 #### Configuration debugging
 
