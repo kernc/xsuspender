@@ -12,15 +12,15 @@ static inline
 int
 execute (char **argv,
          char **envp,
-         char **stdout)
+         char **mystdout)
 {
     g_autoptr (GError) err = NULL;
     gint exit_status = -1;
     GSpawnFlags flags = G_SPAWN_STDERR_TO_DEV_NULL |
-                        (stdout ? G_SPAWN_DEFAULT : G_SPAWN_STDOUT_TO_DEV_NULL);
+                        (mystdout ? G_SPAWN_DEFAULT : G_SPAWN_STDOUT_TO_DEV_NULL);
 
     g_spawn_sync (NULL, argv, envp, flags | G_SPAWN_SEARCH_PATH,
-                  NULL, NULL, stdout, NULL, &exit_status, &err);
+                  NULL, NULL, mystdout, NULL, &exit_status, &err);
     if (err)
         g_warning ("Unexpected subprocess execution error: %s", err->message);
 
