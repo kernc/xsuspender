@@ -71,9 +71,9 @@ sudo apt install libglib2.0-dev \
                  make cmake gcc pkg-config
 
 # on Fedora / RHEL / openSUSE / Solus:
-sudo dnf install glib2-devel   \
-                 libwnck-devel \
-                 procps-ng     \
+sudo dnf install glib2-devel    \
+                 libwnck3-devel \
+                 procps-ng      \
                  make cmake gcc pkg-config
 ```
 
