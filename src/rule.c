@@ -8,7 +8,7 @@
 Rule*
 xsus_rule_copy (Rule *orig)
 {
-    Rule *rule = g_memdup (orig, sizeof (Rule));
+    Rule *rule = g_memdup2 (orig, sizeof (Rule));
 
     // Duplicate strings explicitly
     rule->needle_wm_name = g_strdup (orig->needle_wm_name);
