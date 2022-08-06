@@ -171,7 +171,10 @@ static
 void
 iterate_windows_kill_matching ()
 {
-    for (GList *w = wnck_screen_get_windows (wnck_screen_get_default ()); w ; w = w->next) {
+    WnckScreen *screen = wnck_screen_get_default ();
+    WnckWindow *active = wnck_screen_get_active_window (screen);
+
+    for (GList *w = wnck_screen_get_windows (screen); w ; w = w->next) {
         WnckWindow *window = w->data;
         Rule *rule = main_window_get_rule (window);
 
@@ -180,7 +183,7 @@ iterate_windows_kill_matching ()
             continue;
 
         // Skip currently focused window
-        if (wnck_window_is_active (window))
+        if (active != NULL && windows_are_same_process (window, active))
             continue;
 
         // On battery, auto-suspend windows that allow it
