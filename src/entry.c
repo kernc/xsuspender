@@ -20,7 +20,7 @@ xsus_window_entry_new (WnckWindow *window,
 WindowEntry*
 xsus_window_entry_copy (WindowEntry *entry)
 {
-    WindowEntry *copy = g_memdup (entry, sizeof (WindowEntry));
+    WindowEntry *copy = g_memdup2 (entry, sizeof (WindowEntry));
     copy->wm_name = g_strdup (copy->wm_name);
     return copy;
 }
