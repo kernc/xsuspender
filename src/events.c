@@ -222,6 +222,9 @@ is_on_ac_power ()
     }
 
     while ((basename = g_dir_read_name (dir))) {
+        if (g_str_has_prefix (basename, "hid"))
+            continue;  // Skip HID devices, GH-38
+
         g_autofree char *filename = g_build_filename (DIRNAME, basename, "online", NULL);
         g_autofree char *contents = NULL;
 
