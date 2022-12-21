@@ -1,6 +1,6 @@
 XSuspender
 ==========
-[![Build Status](https://img.shields.io/github/workflow/status/kernc/xsuspender/CI?style=for-the-badge)](https://github.com/kernc/xsuspender/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/kernc/xsuspender/ci.yml?branch=master&style=for-the-badge)](https://github.com/kernc/xsuspender/actions)
 
 Automatically suspend inactive X11 applications.
 
