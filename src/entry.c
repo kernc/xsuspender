@@ -3,6 +3,7 @@
 #include <glib.h>
 #include <libwnck/libwnck.h>
 
+#include "proc.h"
 
 WindowEntry*
 xsus_window_entry_new (WnckWindow *window,
@@ -10,7 +11,7 @@ xsus_window_entry_new (WnckWindow *window,
 {
     WindowEntry *entry = g_malloc (sizeof (WindowEntry));
     entry->rule = rule;
-    entry->pid = wnck_window_get_pid (window);
+    entry->pid = xsus_window_get_pid (window);
     entry->xid = wnck_window_get_xid (window);
     entry->wm_name = g_strdup (wnck_window_get_name (window));
     return entry;
@@ -44,7 +45,7 @@ xsus_entry_find_for_window_rule (WnckWindow *window,
 {
     // If suspending by signals, find entry by PID ...
     if (rule->send_signals) {
-        pid_t pid = wnck_window_get_pid (window);
+        pid_t pid = xsus_window_get_pid (window);
         for (; list; list = list->next) {
             WindowEntry *entry = list->data;
             if (entry->pid == pid)

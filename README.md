@@ -63,10 +63,11 @@ Install binary package for your GNU/Linux distribution:
 #### From Source
 
 ```bash
-# Install dependencies, namely GLib, Libwnck, procps
+# Install dependencies, namely GLib, Libwnck, libprocps, procps
 # on Debian / Ubuntu / Mint:
 sudo apt install libglib2.0-dev \
                  libwnck-3-dev  \
+                 libprocps-dev  \
                  procps         \
                  make cmake gcc pkg-config
 

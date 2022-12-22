@@ -4,6 +4,7 @@
 #include <libwnck/libwnck.h>
 
 #include "xsuspender.h"
+#include "proc.h"
 
 Rule*
 xsus_rule_copy (Rule *orig)
@@ -14,6 +15,8 @@ xsus_rule_copy (Rule *orig)
     rule->needle_wm_name = g_strdup (orig->needle_wm_name);
     rule->needle_wm_class = g_strdup (orig->needle_wm_class);
     rule->needle_wm_class_group = g_strdup (orig->needle_wm_class_group);
+
+    rule->process_name = g_strdup (orig->process_name);
 
     rule->exec_suspend = g_strdupv (orig->exec_suspend);
     rule->exec_resume = g_strdupv (orig->exec_resume);
@@ -28,6 +31,8 @@ xsus_rule_free (Rule *rule)
     g_free (rule->needle_wm_class);
     g_free (rule->needle_wm_class_group);
     g_free (rule->needle_wm_name);
+
+    g_free (rule->process_name);
 
     g_strfreev (rule->exec_suspend);
     g_strfreev (rule->exec_resume);

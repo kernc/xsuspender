@@ -145,6 +145,9 @@ read_section (GKeyFile *file,
     str = g_key_file_get_value (file, section, CONFIG_KEY_SUBTREE_PATTERN, &err);
     if (! is_error (&err)) reassign_str (&rule->subtree_pattern, str);
 
+    str = g_key_file_get_value (file, section, CONFIG_KEY_PROCESS_NAME, &err);
+    if ( !is_error (&err)) reassign_str (&rule->process_name, str);
+
     char **argv;
 
     argv = parse_command (file, section, CONFIG_KEY_EXEC_SUSPEND, &err);
@@ -190,6 +193,7 @@ debug_print_rule (Rule *rule)
                  "only_on_battery = %d\n"
                  "send_signals = %d\n"
                  "subtree_pattern = %s\n"
+                 "process_name = %s\n"
                  "downclock_on_battery = %d\n"
                  "exec_suspend = %s\n"
                  "exec_resume = %s\n",
@@ -202,6 +206,7 @@ debug_print_rule (Rule *rule)
              rule->only_on_battery,
              rule->send_signals,
              rule->subtree_pattern,
+             rule->process_name,
              rule->downclock_on_battery,
              (rule->exec_suspend ? rule->exec_suspend[2] : NULL),
              (rule->exec_resume ? rule->exec_resume[2] : NULL)
@@ -221,6 +226,8 @@ parse_config ()
         .exec_resume = NULL,
 
         .subtree_pattern = NULL,
+
+        .process_name = NULL,
 
         .downclock_on_battery = 0,
 
