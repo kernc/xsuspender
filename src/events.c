@@ -120,9 +120,17 @@ on_suspend_pending_windows ()
         if (now >= entry->suspend_timestamp) {
             queued_entries = g_slist_delete_link (queued_entries, l);
 
-            // Follow through with suspension only if window is still alive
-            if (window_entry_get_pid (entry))
-                xsus_signal_stop (entry);
+            // Follow through with suspension.
+            // This is safe even without ensuring `window_entry_get_pid (entry)`
+            // because the OS simply won't will invalid PIDs, and we let the
+            // exec_suspend= scripts run.
+            // This fixes a bug where the app window minimizes to system tray,
+            // making `wnck_window_get_pid` return invalid PID for an obviously
+            // non-existent window, but the process/PID is still there,
+            // letting us kill it.
+            // In this configuration with systray, it is important to have
+            // low resume_every= values to be able to get the iconified app back up!
+            xsus_signal_stop (entry);
         }
         l = next;
     }
