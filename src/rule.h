@@ -16,6 +16,8 @@ typedef struct Rule {
 
     char*  subtree_pattern;
 
+    char*  process_name;
+
     guint16 delay;
     guint16 resume_every;
     guint16 resume_for;
