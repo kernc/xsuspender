@@ -23,6 +23,7 @@
 #define EXAMPLE_CONF "/usr/share/doc/xsuspender/examples/xsuspender.conf"
 #endif
 
+extern WnckHandle *handle;
 
 extern gboolean is_battery_powered;
 

@@ -13,7 +13,7 @@
 void
 xsus_init_event_handlers ()
 {
-    WnckScreen *screen = wnck_screen_get_default ();
+    WnckScreen *screen = wnck_handle_get_default_screen (handle);
 
     g_signal_connect (screen, "active-window-changed",
                       G_CALLBACK (on_active_window_changed), NULL);
@@ -103,7 +103,7 @@ static inline
 pid_t
 window_entry_get_pid (WindowEntry *entry)
 {
-    WnckWindow *window = wnck_window_get (entry->xid);
+    WnckWindow *window = wnck_handle_get_window (handle, entry->xid);
     return window && wnck_window_get_pid (window) == entry->pid ? entry->pid : 0;
 }
 
@@ -179,7 +179,7 @@ static
 void
 iterate_windows_kill_matching ()
 {
-    WnckScreen *screen = wnck_screen_get_default ();
+    WnckScreen *screen = wnck_handle_get_default_screen (handle);
     WnckWindow *active = wnck_screen_get_active_window (screen);
 
     for (GList *w = wnck_screen_get_windows (screen); w ; w = w->next) {
@@ -385,7 +385,7 @@ on_downclock_slice ()
 
             // Only downclock-resume the current process if it's not already
             // fully suspended by the other mechanism
-            WnckWindow *window = wnck_window_get (entry->xid);
+            WnckWindow *window = wnck_handle_get_window (handle, entry->xid);
             if (! entry->rule->send_signals ||
                 ! xsus_entry_find_for_window_rule (window, entry->rule, suspended_entries))
                 kill (pid, SIGCONT);
@@ -416,7 +416,8 @@ on_update_downclocked_processes ()
         g_hash_table_add (old_pids, GINT_TO_POINTER (((DownclockPair*) l->data)->entry->pid));
 
     // Iterate over all windows and find processes to downclock
-    for (GList *w = wnck_screen_get_windows (wnck_screen_get_default ()); w ; w = w->next) {
+    WnckScreen *screen = wnck_handle_get_default_screen (handle);
+    for (GList *w = wnck_screen_get_windows (screen); w ; w = w->next) {
         WnckWindow *window = w->data;
         Rule *rule = main_window_get_rule (window);
 

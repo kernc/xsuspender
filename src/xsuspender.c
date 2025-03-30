@@ -19,6 +19,8 @@
 static
 GMainLoop *loop;
 
+WnckHandle *handle;
+
 gboolean is_battery_powered;
 
 GSList *suspended_entries;
@@ -162,11 +164,13 @@ xsus_init ()
 {
     g_debug ("Initializing.");
 
+    handle = wnck_handle_new (WNCK_CLIENT_TYPE_PAGER);
+
     // Nowadays common to have a single screen which combines several physical
     // monitors. So it's ok to take the default. See:
     // https://developer.gnome.org/libwnck/stable/WnckScreen.html#WnckScreen.description
     // https://developer.gnome.org/gdk4/stable/GdkScreen.html#GdkScreen.description
-    if (! wnck_screen_get_default ())
+    if (! wnck_handle_get_default_screen (handle))
         g_critical ("Default screen is NULL. Not an X11 system? Too bad.");
 
     // Parse the configuration files
