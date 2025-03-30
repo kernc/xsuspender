@@ -56,7 +56,7 @@ Installation
 
 Install binary package for your GNU/Linux distribution:
 
-[![Debian, Ubuntu](doc/debian_ubuntu.svg)](https://software.opensuse.org//download.html?project=home%3Akernc%3Axsuspender&package=xsuspender)
+[![Debian, Ubuntu](doc/debian_ubuntu.svg)](https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=975103)
 [![Arch Linux](doc/arch.svg)](https://aur.archlinux.org/packages/xsuspender-git/)
 
 
