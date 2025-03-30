@@ -7,8 +7,8 @@ if (NOT CMAKE_BUILD_TYPE)
     set (CMAKE_BUILD_TYPE Release)
 endif ()
 
-set (CMAKE_C_STANDARD 99)
-set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")  # CMake<=3.0
+set (CMAKE_C_STANDARD 11)
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")  # CMake<=3.0
 
 set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
 set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0 -DG_ENABLE_DEBUG")
