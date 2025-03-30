@@ -1,8 +1,11 @@
 XSuspender
 ==========
-[![Build Status](https://img.shields.io/github/actions/workflow/status/kernc/xsuspender/ci.yml?branch=master&style=for-the-badge)](https://github.com/kernc/xsuspender/actions)
+[![Build: Passing](https://img.shields.io/github/actions/workflow/status/kernc/xsuspender/ci.yml?branch=master&style=for-the-badge)](https://github.com/kernc/xsuspender/actions)
+[![Source lines of code](https://img.shields.io/endpoint?url=https%3A%2F%2Fghloc.vercel.app%2Fapi%2Fkernc%2Fxsuspender%2Fbadge?format=human&style=for-the-badge&label=SLOC&color=green)](https://ghloc.vercel.app/kernc/xsuspender)
+[![Language: shell / Bash](https://img.shields.io/badge/lang-C99-skyblue?style=for-the-badge)](https://github.com/kernc/xsuspender)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/kernc?color=pink&style=for-the-badge)](https://github.com/sponsors/kernc)
 
-Automatically suspend inactive X11 applications.
+**Automatically suspend inactive X11 (Xorg) applications.**
 
 [XSuspender project website](https://kernc.github.io/xsuspender/)
 
