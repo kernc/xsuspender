@@ -2,9 +2,17 @@ name: CI
 on:
   push: { branches: [master] }
   pull_request: { branches: [master] }
-  schedule: [ cron: '3 15 * * 6' ]  # Every Saturday, 03:15
+  schedule: [ cron: '3 15 9 * *' ]
 
 jobs:
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: liskin/gh-workflow-keepalive@f72ff1a1336129f29bf0166c0fd0ca6cf1bcb38c  # v1.2.1
+
   lint:
     runs-on: ubuntu-latest
     steps:
