@@ -7,6 +7,7 @@
 
 #include <glib.h>
 #include <libwnck/libwnck.h>
+#include <gdk/gdkx.h>
 
 #include "config.h"
 #include "entry.h"
@@ -277,6 +278,13 @@ main (int argc,
     // Parse command line arguments
     gdk_init (&argc, &argv);
     parse_args (&argc, &argv);
+
+    // Check that running on X11 only not anything else
+    GdkDisplay *display = gdk_display_get_default ();
+    if (!GDK_IS_X11_DISPLAY (display)) {
+        g_printerr ("xsuspender: This program only works on X11, not on any other display server.\n");
+        exit (EXIT_FAILURE);
+    }
 
     // Make g_critical() always exit
     g_log_set_always_fatal (G_LOG_LEVEL_CRITICAL);
